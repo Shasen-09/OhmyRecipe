@@ -16,32 +16,31 @@ const Home = () => {
 
   useEffect(() => {
     const checkAccess = async () => {
-
-      const isverified = user.isverified === true || user.isverified === 'true';
-
-      if (!isverified) {
-        alert("Please verify first!")
-        navigate('/');
-        return;
-      }
-      if (!token) {
+      if (!token || !user) {
         alert("You must be logged in");
         navigate('/login');
         return;
       }
+
+      const isverified = user.isverified === true || user.isverified === 'true';
+      if (!isverified) {
+        alert("Please verify your account first!");
+        navigate('/verify'); // redirect to your verification page, not '/'
+        return;
+      }
+
       try {
         const response = await AuthServices.homeService(token);
         alert(response.data.message);
       } catch (error) {
         alert("Failed to access home data. Please login again.");
         navigate('/login');
-        console.log(error)
+        console.log(error);
       }
-    }
+    };
+
     checkAccess();
-
-
-  }, [navigate])
+  }, [navigate, token, user]);
 
 
 

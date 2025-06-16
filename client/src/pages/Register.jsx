@@ -1,11 +1,16 @@
 import { faIdCard } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
+import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom'
 import AuthServices from '../services/AuthServices'
+import { registerUser } from '../redux/store/authSlice';
 
 const Register = () => {
+  const dispatch = useDispatch();
   const navigate = useNavigate();
+
+  const { loading, error, user, isverified } = useSelector(state => state.auth);
 
   const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
@@ -13,6 +18,11 @@ const Register = () => {
   const [confirmpassword, setConfirmPassword] = useState('');
   const [contact, setContact] = useState('');
 
+  useEffect(() => {
+    if (user && !isverified) {
+      navigate('/verify')
+    }
+  }, [user, isverified, navigate])
   //register
   const registerHandler = async (e) => {
     e.preventDefault();
@@ -25,14 +35,8 @@ const Register = () => {
       alert("Password don't match")
       return;
     }
-    const data = { username, email, password, confirmpassword, contact }
-    try {
-      const res = await AuthServices.registerService(data);
-      console.log(res.data, email)
-      navigate('/verify', { state: { email } })
-    } catch (error) {
-      console.log(error)
-    }
+    const userData = { username, email, password, confirmpassword, contact }
+    dispatch(registerUser(userData))
 
   }
 
@@ -55,7 +59,16 @@ const Register = () => {
 
             <input type='text' placeholder='Enter your contact' className='border border-gray-300 px-4 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-red-400' value={contact} onChange={(e) => { setContact(e.target.value) }} />
 
-            <button onClick={(e) => { registerHandler(e) }} className='bg-red-600 text-white font-bold py-2 rounded-md hover:bg-red-700 transition duration-200'>Register</button>
+            <button
+              onClick={registerHandler}
+              className={`bg-red-600 text-white font-bold py-2 rounded-md transition duration-200 ${loading ? 'opacity-50 cursor-not-allowed' : 'hover:bg-red-700'
+                }`}
+              disabled={loading}
+            >
+              {loading ? 'Registering...' : 'Register'}
+            </button>
+
+            {error && <p className="text-red-600 mt-2">{error}</p>}
           </div>
 
         </div>

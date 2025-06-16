@@ -19,6 +19,7 @@ const PORT = process.env.PORT || 5000;
 
 app.use('/', require('./routes/startRoute'));
 app.use('/user', require('./routes/userRoutes'))
+app.use('/api/recipes', require('./routes/recipeRoute'))
 
 app.listen(PORT, () => {
   console.log(`Server is running on ${process.env.DEV_MODE} on PORT: ${PORT}`.bgWhite)

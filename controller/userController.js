@@ -155,7 +155,10 @@ const sendOtpController = async (req, res) => {
 
     res.status(200).send({
       success: true,
-      message: "OTP sent to your email"
+      message: "OTP sent to your email",
+      user: {
+        email: user.email
+      }
     });
 
   } catch (error) {
@@ -216,11 +219,12 @@ const verifyOtpController = async (req, res) => {
     user.otp = null;
     user.otpExpires = null; // clear it completely
     await user.save();
+    const token = await JWT.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: '1d' });
 
     res.status(200).send({
       success: true,
       message: "OTP verified successfully, account activated!",
-
+      token,
       user: {
         email: user.email,
         isverified: user.isVerified,
