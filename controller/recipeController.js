@@ -9,7 +9,7 @@ const getPopularRecipes = async (req, res) => {
       params: {
         apiKey: API,
         sort: 'popularity',
-        number: 10,
+        number: 9,
       }
     });
 
