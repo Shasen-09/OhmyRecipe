@@ -40,28 +40,18 @@ const Landing = () => {
     <>
       <NavBAr />
       <div className='w-[600px] h-[600px] bg-gradient-to-tr from-blue-600/20 to-pink-500/20 rounded-full -left-28 -top-0.05 absolute blur-[50px] pointer-events-none'></div>
-      <div className="items-center justify-center">
-        <h1 className="text-6xl font-bold mb-10 text-center">Welcome to the Landing Page</h1>
-        <div className='flex gap-5 mb-10 justify-center'>
-          <button
-            onClick={() => navigate('/login')}
-            className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded shadow hover:opacity-50"
-          >
-            Login
-          </button>
-          <button
-            onClick={() => navigate('/register')}
-            className="bg-red-600 hover:bg-red-700 text-white px-6 py-2 rounded shadow hover:opacity-50"
-          >
-            Register
-          </button>
-        </div>
+
+      <div className="items-center justify-center mt-10">
+        <h1 className="text-6xl font-bold mb-10 text-red-500 hover:opacity-50 text-center">Bhok lagyo - <span className=' text-blue-600 '>K khane ta?
+        </span>
+        </h1>
+
         <div>
 
 
-          <div className="flex gap-10 items-center ml-5 mr-5">
-            <span className="text-4xl font-bold whitespace-nowrap">Recipe for this week</span>
-            <div className="flex-1 overflow-hidden  rounded px-2 h-12 relative">
+          <div className=" flex gap-5 w-[95%] mx-auto">
+            <span className="text-4xl font-bold whitespace-nowrap text-red-600"><span className='text-blue-600'>Recipe for</span> this week</span>
+            <div className="flex-1 overflow-hidden  rounded px-2 h-12 relative w-[70%] mx-auto">
               <div className="absolute animate-marquee whitespace-nowrap text-white text-2xl flex gap-8 items-center h-full">
                 {[...Array(20)].map((_, i) => (
                   <React.Fragment key={i}>
@@ -74,13 +64,14 @@ const Landing = () => {
                 ))}
               </div>
             </div>
+
           </div>
 
 
 
-          <div className=' grid grid-cols-1 md:grid-cols-3 gap-4 p-4'>
+          <div className=' grid grid-cols-1 md:grid-cols-3 w-[97%]  gap-10 p-4 mx-auto'>
             {recipes.map(recipe => (
-              <div key={recipe.id} className="flex gap-6 border p-4 rounded shadow-lg items-center bg-gray-200">
+              <div key={recipe.id} className="flex gap-6 border border-none p-4 rounded shadow-lg items-center bg-gray-200">
                 <img
                   src={recipe.image}
                   alt={recipe.title}
@@ -105,16 +96,35 @@ const Landing = () => {
 
                   <div className='flex justify-between items-center'><strong>Likes:</strong>
                     {recipe.aggregateLikes}</div>
-                  <button className='bg-blue-600 rounded-full text-white w-full h-8 ml-auto ' onClick={handleClick}><FontAwesomeIcon icon={faArrowRight} /></button>
+                  <button className='bg-blue-600 rounded-full text-white w-full h-8 mx-auto cursor-pointer' onClick={handleClick}><FontAwesomeIcon icon={faArrowRight} /></button>
 
                 </div>
 
 
               </div>
             ))}
+
           </div>
 
-        </div>
+
+
+        </div >
+      </div >
+
+
+      <div className='flex gap-5 mb-10 justify-center'>
+        <button
+          onClick={() => navigate('/login')}
+          className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded shadow hover:opacity-50"
+        >
+          Login
+        </button>
+        <button
+          onClick={() => navigate('/register')}
+          className="bg-red-600 hover:bg-red-700 text-white px-6 py-2 rounded shadow hover:opacity-50"
+        >
+          Register
+        </button>
       </div>
 
     </>
