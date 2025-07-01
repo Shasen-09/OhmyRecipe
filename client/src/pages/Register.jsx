@@ -41,39 +41,74 @@ const Register = () => {
   }
 
   return (
-    <>
-      <div className='flex flex-col items-center justify-center min-h-screen bg-gray-100'>
-        <div className=' flex gap-15 border-2 p-20 rounded-t items-center justify-center '>
-          <FontAwesomeIcon icon={faIdCard} className='text-[200px] text-red-600 mx-auto mb-4' />
-          <div className='grid gap-5'>
-            <input type='text' placeholder='Enter your name' className='border border-gray-300 px-4 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-red-400' value={username}
-              onChange={(e) => setUsername(e.target.value)} />
-
-            <input type='text' placeholder='Enter your email' className='border border-gray-300 px-4 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-red-400' value={email}
-              onChange={(e) => { setEmail(e.target.value) }} />
-
-            <input type='text' placeholder='Enter your password' className='border border-gray-300 px-4 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-red-400' value={password}
-              onChange={(e) => { setPassword(e.target.value) }} />
-
-            <input type='text' placeholder='Confirm your pasword' className='border border-gray-300 px-4 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-red-400' value={confirmpassword} onChange={(e) => { setConfirmPassword(e.target.value) }} />
-
-            <input type='text' placeholder='Enter your contact' className='border border-gray-300 px-4 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-red-400' value={contact} onChange={(e) => { setContact(e.target.value) }} />
-
-            <button
-              onClick={registerHandler}
-              className={`bg-red-600 text-white font-bold py-2 rounded-md transition duration-200 ${loading ? 'opacity-50 cursor-not-allowed' : 'hover:bg-red-700'
-                }`}
-              disabled={loading}
-            >
-              {loading ? 'Registering...' : 'Register'}
-            </button>
-
-            {error && <p className="text-red-600 mt-2">{error}</p>}
-          </div>
-
-        </div>
+    <div className="flex min-h-screen">
+      {/* Left Panel */}
+      <div className="w-1/2 bg-gradient-to-br from-red-700 to-red-400 text-white p-10 flex flex-col justify-center items-center">
+        <FontAwesomeIcon icon={faIdCard} className="text-[120px] mb-6" />
+        <h2 className="text-3xl font-bold mb-2">Welcome to Our Portal!</h2>
+        <p className="text-center max-w-sm">Join us by creating your account. Enjoy fast access and more features.</p>
       </div>
-    </>
+
+      {/* Right Panel */}
+      <div className="w-1/2 bg-white flex items-center justify-center">
+        <form
+          onSubmit={registerHandler}
+          className="bg-white p-10 rounded-lg shadow-xl w-full max-w-md space-y-5"
+        >
+          <h2 className="text-2xl font-bold text-red-600 text-center">Create Account</h2>
+
+          <input
+            type='text'
+            placeholder='Enter your name'
+            className='w-full border border-gray-300 px-4 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-red-400'
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
+          />
+
+          <input
+            type='email'
+            placeholder='Enter your email'
+            className='w-full border border-gray-300 px-4 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-red-400'
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+          />
+
+          <input
+            type='password'
+            placeholder='Enter your password'
+            className='w-full border border-gray-300 px-4 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-red-400'
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+          />
+
+          <input
+            type='password'
+            placeholder='Confirm your password'
+            className='w-full border border-gray-300 px-4 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-red-400'
+            value={confirmpassword}
+            onChange={(e) => setConfirmPassword(e.target.value)}
+          />
+
+          <input
+            type='text'
+            placeholder='Enter your contact number'
+            className='w-full border border-gray-300 px-4 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-red-400'
+            value={contact}
+            onChange={(e) => setContact(e.target.value)}
+          />
+
+          <button
+            type='submit'
+            disabled={loading}
+            className={`w-full bg-red-600 text-white font-bold py-2 rounded-md transition duration-200 ${loading ? 'opacity-50 cursor-not-allowed' : 'hover:bg-red-700'}`}
+          >
+            {loading ? 'Registering...' : 'Register'}
+          </button>
+
+          {error && <p className="text-red-600 text-sm text-center">{error}</p>}
+        </form>
+      </div>
+    </div>
   )
 }
 

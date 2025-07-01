@@ -2,6 +2,7 @@ import React, { useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import AuthServices from '../services/AuthServices';
 import NavBAr from './NavBAr';
+import Userinput from './Home/Userinput';
 
 const Home = () => {
   const navigate = useNavigate();
@@ -53,6 +54,7 @@ const Home = () => {
         <h1 className="text-6xl font-bold mb-10">Welcome to the Home Page</h1>
 
       </div>
+      <Userinput />
     </>
   )
 }

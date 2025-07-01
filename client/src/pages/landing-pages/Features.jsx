@@ -1,12 +1,52 @@
-import React from 'react'
+import React from 'react';
+import { FaSearch, FaBookmark, FaUtensils, FaHeart, FaRegBell } from 'react-icons/fa';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+
+const features = [
+  {
+    icon: <FaSearch size={24} />,
+    title: 'Smart Search',
+    desc: 'Find the perfect recipe by ingredients, cuisine, or dietary needs.',
+  },
+  {
+    icon: <FaBookmark size={24} />,
+    title: 'Save Favorites',
+    desc: 'Bookmark recipes you love and access them anytime.',
+  },
+  {
+    icon: <FaUtensils size={24} />,
+    title: 'Step-by-Step Mode',
+    desc: 'Cook with our interactive guide that keeps you on track.',
+  },
+  {
+    icon: <FaRegBell size={24} />,
+    title: 'Real-Time Notifications',
+    desc: 'Stay updated on new recipes and community comments.',
+  },
+  {
+    icon: <FaHeart size={24} />,
+    title: 'Community Tips',
+    desc: 'Get useful advice from other food lovers and home cooks.',
+  },
+];
 
 const Features = () => {
   return (
-    <div id='features' className='mt-10'><div>
-      Features               The city buzzed with energy, skyscrapers reaching for the clouds as cars honked below. People hurried along crowded sidewalks, each lost in their own world of thoughts and plans. Street vendors shouted, selling snacks and trinkets, while musicians played melodies that echoed between buildings. Neon signs flickered to life as dusk settled, painting the streets in vibrant hues. Amid the chaos, a quiet café offered a refuge, its warm lights spilling onto the pavement. Inside, strangers shared smiles and stories over steaming cups of coffee. In that brief moment, the city’s pulse slowed, revealing its hidden heart.
+    <section id='features' className='bg-gray-50 py-12 px-4 scroll-m-12'>
+      <div className='max-w-7xl mx-auto text-center'>
+        <h2 className='text-4xl font-bold text-blue-600 mb-8'>Features</h2>
+        <div className='grid gap-8 grid-cols-3'>
+          {features.map((feature, index) => (
+            <div key={index} className='bg-white p-6 rounded-lg shadow hover:shadow-lg transition-all'>
+              <div className='text-blue-600 mb-4'>{feature.icon}</div>
+              <h3 className='text-xl font-semibold mb-2'>{feature.title}</h3>
+              <p className='text-gray-600'>{feature.desc}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+};
 
-    </div></div>
-  )
-}
-
-export default Features
+export default Features;

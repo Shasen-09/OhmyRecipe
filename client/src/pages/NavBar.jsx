@@ -31,7 +31,7 @@ const NavBar = () => {
   const handleLogout = () => {
     dispatch(logout());  // Clear redux auth state
     setDropDownOpen(false);
-    navigate('/login');
+    navigate('/');
   };
 
   useEffect(() => {
@@ -45,7 +45,7 @@ const NavBar = () => {
   }, []);
 
   return (
-    <nav className="bar h-12 flex items-center px-4 text-white font-semibold shadow-md bg-gradient-to-r from-blue-200 via-blue-500 to-blue-700 gap-5">
+    <nav className="bar h-12 flex items-center sticky top-0 z-50 px-4 text-white font-semibold shadow-md bg-gradient-to-r from-blue-200 via-blue-500 to-blue-700 gap-5">
       <div className="flex flex-row w-full gap-5">
         <FontAwesomeIcon icon={faBowlFood} className="text-3xl text-white" />
         <div className="relative flex-1">

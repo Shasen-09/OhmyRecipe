@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCircleUser } from '@fortawesome/free-solid-svg-icons';
+import { IoIosLock } from "react-icons/io";
+import { IoMail } from "react-icons/io5";
+
 import { Link, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { loginUser } from '../redux/store/authSlice'; // Adjust path as needed
+import { loginUser } from '../redux/store/authSlice';
+import image from '../assets/images/2.png'
 
 const Login = () => {
   const dispatch = useDispatch();
@@ -31,14 +33,12 @@ const Login = () => {
       const resultAction = await dispatch(loginUser({ email, password }));
 
       if (loginUser.fulfilled.match(resultAction)) {
-        // Check if user is verified before navigating
         if (!resultAction.payload.user.isverified) {
           alert("User is not verified");
           return;
         }
         navigate('/home');
       } else {
-        // loginUser rejected
         alert(resultAction.payload || 'Login failed');
       }
     } catch (err) {
@@ -47,44 +47,75 @@ const Login = () => {
   };
 
   return (
-    <div className='flex flex-col justify-center items-center min-h-screen bg-gray-100'>
-      <div className='grid gap-5 border-2 p-20 rounded-t items-center justify-center'>
-        <FontAwesomeIcon icon={faCircleUser} className="text-[200px] text-blue-600 mx-auto mb-4" />
 
-        <input
-          type='email'
-          placeholder='Enter your email'
-          className='border border-gray-300 rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400'
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
+    <div className="flex min-h-screen">
+      {/* Left Illustration Section */}
+      <div className="w-1/2 bg-white flex items-center justify-center ">
+        <img
+          src={image}
+          alt="Login Illustration"
+          className="max-w-md"
         />
+      </div>
 
-        <input
-          type='password'
-          placeholder='Enter your password'
-          className='border border-gray-300 rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400'
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-        />
+      {/* Right Login Section */}
+      <div className="w-1/2 bg-blue-600 flex items-center justify-center">
+        <div className="bg-white p-10 rounded-lg shadow-lg w-80 space-y-5">
+          <h2 className="text-2xl font-bold text-blue-600">Hello!</h2>
+          <p className="text-sm text-gray-400">Sign Up to Get Started</p>
 
-        <button
-          className='rounded-md bg-blue-600 text-white font-bold py-2 hover:bg-blue-700 transition duration-200 disabled:opacity-50'
-          onClick={loginHandler}
-          disabled={loading}
-        >
-          {loading ? 'Logging in...' : 'Log in'}
-        </button>
+          <div className="relative">
+            <span className="absolute inset-y-0 left-0 pl-3 flex items-center text-gray-400">
+              <IoMail />
+            </span>
+            <input
+              type='email'
+              placeholder='Email Address'
+              className='w-full pl-10 border border-gray-300 rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400'
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              disabled={loading}
+            />
+          </div>
 
-        {error && <p className="text-red-600">{error}</p>}
+          <div className="relative">
+            <span className="absolute inset-y-0 left-0 pl-3 flex items-center text-gray-400">
+              <IoIosLock />
+            </span>
+            <input
+              type='password'
+              placeholder='Password'
+              className='w-full pl-10 border border-gray-300 rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400'
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              disabled={loading}
+            />
+          </div>
 
-        <p>
-          Don't have an account?{' '}
-          <Link to='/register' className='text-blue-600 hover:underline'>
-            Register now
-          </Link>
-        </p>
+          <button
+            className='w-full rounded-md bg-blue-600 text-white font-bold py-2 hover:bg-blue-700 transition duration-200 disabled:opacity-50'
+            onClick={loginHandler}
+            disabled={loading}
+          >
+            {loading ? 'Logging in...' : 'Login'}
+          </button>
+
+          {error && <p className="text-red-600 text-sm">{error}</p>}
+
+          <div className="text-sm text-center">
+            <Link to="/forgot" className="text-blue-600 hover:underline">Forgot Password</Link>
+          </div>
+
+          <div className="text-sm text-center">
+            Don't have an account?{' '}
+            <Link to='/register' className='text-blue-600 hover:underline'>
+              Register now
+            </Link>
+          </div>
+        </div>
       </div>
     </div>
+
   );
 };
 

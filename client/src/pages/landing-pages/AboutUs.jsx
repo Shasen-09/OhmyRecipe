@@ -3,7 +3,7 @@ import image from '../../assets/images/1.png'
 
 const AboutUs = () => {
   return (
-    <div id='about' className='w-[95%] mx-auto py-12 ' >
+    <section id='about' className='w-[95%] mx-auto py-12 scroll-mt-12' >
       <div className='flex flg:flex-row gap-10 items-center'>
         <img src={image} alt="Recipe for cooking" className='rounded-lg  h-[80vh] w-full lg:w-1/2 object-cover ' />
         <div className="lg:w-1/2 ">
@@ -20,7 +20,7 @@ const AboutUs = () => {
             <span className="block mt-2 text-sm text-gray-500">– OhMyRecipe Team</span>
           </blockquote>
         </div>
-      </div ></div >
+      </div ></section>
   )
 }
 

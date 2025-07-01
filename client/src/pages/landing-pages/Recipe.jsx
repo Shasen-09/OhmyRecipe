@@ -31,13 +31,13 @@ const Recipe = () => {
   const handleClick = () => {
     navigate('/login')
   }
+  if (loading) return <p className='text-blue-600 text-4xl text-center font-bold' >Loading popular <span className='text-red-600'>recipes...</span></p>;
+  if (error) return <p className='opacity-20 text-4xl text-center font-bold'>{error}</p>;
 
-  if (loading) return <p>Loading popular recipes...</p>;
-  if (error) return <p>{error}</p>;
   return (
     <>
 
-      <div>
+      <section className='scroll-mt-[200px]' id='popular'>
 
         <div className=" flex gap-5 w-[95%] mx-auto">
           <span className="text-4xl font-bold whitespace-nowrap text-red-600"><span className='text-blue-600'>Recipe for</span> this week</span>
@@ -98,7 +98,7 @@ const Recipe = () => {
 
 
 
-      </div >
+      </section>
 
 
 
