@@ -9,5 +9,16 @@ const popularWeekServices = async () => {
   return response;
 }
 
-const recipeServices = { popularWeekServices }
+
+
+const userInputServices = async (message) => {
+  const response = await axios.post('/api/groq', { message }, {
+    headers: {
+      'Content-Type': 'application/json'
+    }
+  });
+  return response;
+}
+
+const recipeServices = { popularWeekServices, userInputServices }
 export default recipeServices;

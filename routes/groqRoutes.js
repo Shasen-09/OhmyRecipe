@@ -3,7 +3,7 @@ const { sendGroqMessage } = require('../controller/groqController');
 const router = express.Router();
 
 
-router.get('/groq', sendGroqMessage
+router.post('/groq', sendGroqMessage
 );
 
 module.exports = router;
