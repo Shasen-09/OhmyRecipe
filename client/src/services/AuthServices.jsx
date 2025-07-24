@@ -1,4 +1,3 @@
-import React from 'react'
 import axios from 'axios';
 
 const registerService = async (data) => {
@@ -9,6 +8,7 @@ const registerService = async (data) => {
   });
   return response;
 }
+
 const loginService = async (data) => {
   const response = await axios.post('/user/login', data, {
     headers: {
@@ -28,16 +28,26 @@ const verifyService = async (data) => {
 }
 
 const homeService = async (token) => {
-  const response = await axios.post('/user/home', {}, {
-    headers: {
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${token}`
+  try {
+    const response = await axios.post('/user/home', {}, {
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`
+      }
+    });
+    return response;
+  } catch (error) {
+    if (error.response && error.response.status === 401) {
+      if (error.response.data.message === "Token expired, please login again") {
+        localStorage.clear();
+        alert("Session expired. Please log in again.");
+        window.location.href = '/login';
+      }
     }
-  });
-  return response;
+    throw error;
+  }
 }
-
 
 const AuthServices = { registerService, loginService, verifyService, homeService }
 
-export default AuthServices
+export default AuthServices;

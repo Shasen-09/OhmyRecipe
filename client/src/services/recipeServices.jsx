@@ -20,5 +20,15 @@ const userInputServices = async (message) => {
   return response;
 }
 
-const recipeServices = { popularWeekServices, userInputServices }
+
+const recipesByIngredients = async (ingredientsArray) => {
+  const ingredientsQuery = ingredientsArray.join(',');
+  return axios.get('/api/recipes/search-by-ingredients', {
+    params: { ingredients: ingredientsQuery }
+  });
+};
+
+
+
+const recipeServices = { popularWeekServices, userInputServices, recipesByIngredients }
 export default recipeServices;
