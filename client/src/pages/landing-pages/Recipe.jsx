@@ -68,7 +68,7 @@ const Recipe = () => {
                 className="w-40 h-30 object-cover rounded"
               />
               <div className='w-full'>
-                <h3 className="text-xl font-semibold mb-1 line-clamp-3">{recipe.title}</h3>
+                <h3 className="text-xl font-semibold mb-1 line-clamp-1">{recipe.title}</h3>
                 <div className="flex justify-between items-center">
                   <strong>Vegetarian: </strong>
                   {recipe.vegetarian ? (

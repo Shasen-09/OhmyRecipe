@@ -21,8 +21,8 @@ const userInputServices = async (message) => {
 }
 
 
-const recipesByIngredients = async (ingredientsArray) => {
-  const ingredientsQuery = ingredientsArray.join(',');
+const recipesByIngredients = async (ingredients) => {
+  const ingredientsQuery = Object.keys(ingredients).join(',');
   return axios.get('/api/recipes/search-by-ingredients', {
     params: { ingredients: ingredientsQuery }
   });

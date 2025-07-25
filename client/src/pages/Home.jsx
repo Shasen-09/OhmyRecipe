@@ -50,8 +50,8 @@ const Home = () => {
     <>
       <NavBAr />
       <div className=' w-[600px] h-[600px] bg-gradient-to-tr from-blue-600/20 to-pink-500/20 rounded-full  -left-28 -top-0.05 absolute blur-[50px] pointer-events-none'></div>
-      <div className=" items-center justify-center ">
-        <h1 className="text-6xl font-bold mb-10">Welcome to the Home Page</h1>
+      <div className=" text-center">
+        <h1 className="text-6xl font-bold mb-10 text-blue-600">Welcome <span className='uppercase text-red-600'>{user.username}</span> </h1>
 
       </div>
       <Userinput />

@@ -36,7 +36,7 @@ const searchByIngredients = async (req, res) => {
     const response = await axios.get('https://api.spoonacular.com/recipes/findByIngredients', {
       params: {
         ingredients,
-        number: 10,
+        number: 9,
         ranking: 1,
         ignorePantry: true,
         apiKey: API,
