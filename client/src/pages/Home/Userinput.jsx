@@ -3,6 +3,7 @@ import recipeServices from '../../services/recipeServices';
 import { ImCross } from "react-icons/im";
 import { FaArrowRight } from "react-icons/fa";
 
+
 const UserInput = () => {
   const [input, setInput] = useState('');
   const [loading, setLoading] = useState(false);
@@ -12,6 +13,9 @@ const UserInput = () => {
   const [newIngredientsValue, setNewIngredientsValue] = useState('');
 
   const [recipes, setRecipe] = useState([]);
+
+  const [preferences, setPreferences] = useState('');
+  const [preferencesData, setPreferencesData] = useState(null);
 
   const addIngredient = () => {
     if (!newIngredients.trim() || !newIngredientsValue.trim()) {
@@ -39,6 +43,24 @@ const UserInput = () => {
 
     setIngredients(updatedIngredient);
 
+  }
+
+  const fetchPreferences = async () => {
+    if (!ingredients || Object.keys(ingredients).length === 0) {
+      alert('Please extract ingredients first')
+      return;
+    }
+    setLoading(true);
+    try {
+      const res = await recipeServices.userPreferences(preferences);
+      setPreferencesData(res.data);
+      console.log(res.data);
+    } catch (error) {
+      console.log(error)
+    } finally {
+      setLoading(false);
+
+    }
   }
 
   const fetchRecipes = async () => {
@@ -122,18 +144,31 @@ const UserInput = () => {
               <div className='mt-4 flex gap-2 items-center '>
                 <input type='text' placeholder='Add ingredient' value={newIngredients} onChange={(e) => setNewIngredients(e.target.value)} className='border border-gray-300 rounded-md px-2 py-1 flex-1 focus:outline-none focus:ring-2 focus:ring-blue-600 shadow-md' />
                 <input type='text' placeholder='Value' value={newIngredientsValue} onChange={(e) => setNewIngredientsValue(e.target.value)} className='border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-600 shadow-md px-2 py-1 flex-1' />
-                <button className='bg-blue-600 text-white px-3 py-1 rounded-md hover:bg-blue-700 cursor-pointer font-bold' onClick={addIngredient}>Add</button>
+                <button className='bg-blue-600 text-white px-3 py-1 rounded-md hover:bg-blue-700 cursor-pointer font-bold' onClick={addIngredient}> {loading ? '...' : 'Add'}</button>
               </div>
             </div>
-            <div className='w-1/2 flex justify-center'><button className='bg-blue-600 text-white  px-3 py-1 rounded-md hover:bg-blue-700 cursor-pointer font-bold' onClick={fetchRecipes}>Submit</button></div>
+            <div className='w-1/2 flex justify-center'><button className='bg-blue-600 text-white  px-3 py-1 rounded-md hover:bg-blue-700 cursor-pointer font-bold' onClick={fetchRecipes}> {loading ? '...' : 'Get Recipes'}</button></div>
           </div>
 
-          <div className='absolute right-8  w-[45%] top-5'>
+          <div className='absolute right-8  w-[45%] top-1'>
             {
               recipes.length > 0 && (
                 <div className='text-center'>
-                  <h2>Do you have any allergies or diet preferences?</h2>
-                  <input type='text' placeholder='ask something' className='border border-none focus:ring-2 focus:ring-blue-600 focus:outline-none text-lg shadow-md font-semibold py-1 px-2 ' />
+                  <h2 className='text-2xl font-semibold text-blue-600'>Do you have any <span className='text-red-600'>allergies</span> or <span className='text-red-600'>diet preferences</span>?</h2>
+                  <div className='relative w-full '>
+                    <input type='text' placeholder='Please explain your needs...'
+                      value={preferences}
+                      onChange={(e) => setPreferences(e.target.value)}
+                      className='border border-none focus:ring-2 focus:ring-blue-600 focus:outline-none text-lg bg-gray-200 rounded-md shadow-md font-semibold py-1 px-2 w-full mt-7 opacity-60' />
+                    <button className='absolute right-1 top-8 font-bold shadow-md rounded-md bg-blue-600 cursor-pointer text-white py-0.5 px-2' onClick={fetchPreferences}> {loading ? '...' : 'Submit'}</button>
+                  </div>
+                  <div className='text-start mt-2 text-lg font-semibold mx-auto text-blue-600 capitalize '>
+                    <p>Allergies: <span className='text-red-600'>{preferencesData?.allergies?.map(a => a.name).join(', ') || 'None'} </span></p>
+                    <p>Diet preferences: <span className='text-red-600'> {preferencesData?.dietPreferences?.join(', ') || 'None'} </span></p>
+                    <p>Disliked ingredient: <span className='text-red-600'>{preferencesData?.dislikes?.join(', ') || 'None'} </span></p>
+
+                  </div>
+
                 </div>
               )
             }

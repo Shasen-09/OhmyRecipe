@@ -1,7 +1,6 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import AuthServices from "../../services/AuthServices";
-import { faL } from "@fortawesome/free-solid-svg-icons";
-import { act } from "react";
+
 
 
 export const loginUser = createAsyncThunk(
@@ -77,8 +76,6 @@ const authSlice = createSlice({
         const { token, user } = action.payload;
         state.user = user;
         state.token = token;
-
-
         localStorage.setItem('token', token);
         localStorage.setItem('user', JSON.stringify(user));
       })

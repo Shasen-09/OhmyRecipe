@@ -20,6 +20,15 @@ const userInputServices = async (message) => {
   return response;
 }
 
+const userPreferences = async (message) => {
+  const response = await axios.post('/api/groq/user-preferences', { message }, {
+    headers: {
+      'Content-Type': 'application/json'
+    }
+  });
+  return response;
+}
+
 
 const recipesByIngredients = async (ingredients) => {
   const ingredientsQuery = Object.keys(ingredients).join(',');
@@ -30,5 +39,5 @@ const recipesByIngredients = async (ingredients) => {
 
 
 
-const recipeServices = { popularWeekServices, userInputServices, recipesByIngredients }
+const recipeServices = { popularWeekServices, userInputServices, recipesByIngredients, userPreferences }
 export default recipeServices;
