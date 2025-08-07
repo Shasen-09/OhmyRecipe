@@ -34,7 +34,6 @@ const Testimonials = () => {
       <div className="mb-10 mt-10 w-[95%] mx-auto ">
         <h2 className="text-4xl text-center text-red-500 font-bold mb-8">Community Comments</h2>
 
-        {/* Comment Cards */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 px-4">
           {visibleComments.map((com, index) => (
             <div key={index} className="bg-white rounded-lg shadow-md p-5 border border-gray-100 hover:shadow-lg transition">

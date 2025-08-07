@@ -10,7 +10,7 @@ const getPopularRecipes = async (req, res) => {
       params: {
         apiKey: API,
         sort: 'popularity',
-        number: 9,
+        number: 3,
       }
     });
 
@@ -36,7 +36,7 @@ const searchByIngredients = async (req, res) => {
     const response = await axios.get('https://api.spoonacular.com/recipes/findByIngredients', {
       params: {
         ingredients,
-        number: 9,
+        number: 3,
         ranking: 1,
         ignorePantry: true,
         apiKey: API,
@@ -53,5 +53,53 @@ const searchByIngredients = async (req, res) => {
   }
 };
 
+const searchByRecipe = async (req, res) => {
 
-module.exports = { getPopularRecipes, searchByIngredients };
+  try {
+    const { ids } = req.query;
+    if (!ids) {
+      return res.status(400).json({
+        success: false,
+        message: 'Recipe IDs (comma-separated) are required'
+      });
+    }
+    const response = await axios.get('https://api.spoonacular.com/recipes/informationBulk', {
+      params: {
+        ids,
+        apiKey: API,
+      }
+    });
+    res.json(response.data);
+
+  } catch (error) {
+    res.status(500).send({
+      success: false,
+      message: "Recipe fetched unavailabe "
+    })
+  }
+}
+
+const complexSearch = async (req, res) => {
+  try {
+    const { includeIngredients, excludeIngredients, intolerances, diet } = req.query;
+
+    const response = await axios.get('https://api.spoonacular.com/recipes/complexSearch', {
+      params: {
+        includeIngredients,
+        excludeIngredients,
+        intolerances,
+        diet,
+        apiKey: API,
+      }
+    });
+    res.json(response.data);
+  } catch (error) {
+    res.status(500).send({
+      success: false,
+      message: "Complex Search is not available at the moment"
+    })
+  }
+}
+
+
+module.exports = { getPopularRecipes, searchByIngredients, searchByRecipe, complexSearch };

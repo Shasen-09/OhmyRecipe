@@ -37,7 +37,17 @@ const recipesByIngredients = async (ingredients) => {
   });
 };
 
+const getFinalRecipe = async (userPreferencesData) => {
+  const response = await axios.get('/api/recipes/complexSearch', {
+    params: userPreferencesData,
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  });
+
+  return response;
+};
 
 
-const recipeServices = { popularWeekServices, userInputServices, recipesByIngredients, userPreferences }
+const recipeServices = { popularWeekServices, userInputServices, recipesByIngredients, userPreferences, getFinalRecipe }
 export default recipeServices;
