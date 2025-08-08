@@ -10,34 +10,19 @@ const UserInput = () => {
   const [loading, setLoading] = useState(false);
   const [ingredients, setIngredients] = useState({});
 
-  const [newIngredients, setNewIngredients] = useState('');
-  const [newIngredientsValue, setNewIngredientsValue] = useState('');
+
 
   const [recipes, setRecipe] = useState([]);
   const [popupmodal, setPopupmodal] = useState(false);
 
-  const [preferences, setPreferences] = useState('');
+  const [preferences, setPreferences] = useState({
+    allergies: '',
+    diet: '',
+    dislikes: ''
+  });
   const [preferencesData, setPreferencesData] = useState(null);
 
-  const addIngredient = () => {
-    if (!newIngredients.trim() || !newIngredientsValue.trim()) {
-      alert('Please fill in the both fields');
-      return;
-    }
-    if (!ingredients || Object.keys(ingredients).length === 0) {
-      alert('Please Extract ingredients first');
-      setNewIngredients('');
-      setNewIngredientsValue('');
-      return;
-    }
-    setIngredients(prev => ({
-      ...prev,
-      [newIngredients.trim()]: newIngredientsValue.trim()
-    })
-    )
-    setNewIngredients('');
-    setNewIngredientsValue('');
-  }
+
 
   const deleteIngredient = (key) => {
     const updatedIngredient = { ...ingredients };
@@ -55,7 +40,10 @@ const UserInput = () => {
 
     setLoading(true);
     try {
-      const res = await recipeServices.userPreferences(preferences);
+
+      const combinedPreferences = `${preferences.allergies},${preferences.diet},${preferences.dislikes}`;
+
+      const res = await recipeServices.userPreferences(combinedPreferences);
       const { allergies = [], dislikes = [] } = res.data;
 
       const restrictedKeywords = [
@@ -85,6 +73,7 @@ const UserInput = () => {
       }
       setPreferencesData(res.data);
       setIngredients(filteredIngredients);
+      setPopupmodal(false);
 
     } catch (error) {
       console.error(error);
@@ -138,10 +127,21 @@ const UserInput = () => {
       }
       setLoading(true);
       const userPreferencesData = {
-        includeIngredients: Object.keys(ingredients).map(i => i.toLowerCase()).join(","),
-        excludeIngredients: preferencesData?.dislikes?.join(",") || "None",
-        diet: preferencesData?.dietPreferences?.join(",") || "None",
-        intolerances: preferencesData?.allergies?.map(a => a.name).join(", ") || "None",
+        includeIngredients: Object.keys(ingredients)
+          .map(i => pluralize.singular(i).toLowerCase())
+          .join(",") || "None",
+
+        excludeIngredients: (preferencesData?.dislikes || [])
+          .map(d => pluralize.singular(d).toLowerCase())
+          .join(",") || "None",
+
+        diet: (preferencesData?.dietPreferences || [])
+          .map(d => d.toLowerCase())
+          .join(",") || "None",
+
+        intolerances: (preferencesData?.allergies || [])
+          .map(a => a.name.toLowerCase())
+          .join(",") || "None",
       };
       const res = await recipeServices.getFinalRecipe(userPreferencesData);
       console.log(userPreferencesData);
@@ -154,6 +154,10 @@ const UserInput = () => {
       setLoading(false);
     }
   }
+  const editPreferences = () => {
+    setPopupmodal(true);
+    setPreferencesData('');
+  }
 
 
 
@@ -164,7 +168,7 @@ const UserInput = () => {
 
       <div className=''>
 
-        <div className={`${popupmodal && (!preferencesData || Object.keys(preferencesData).length === 0) ? 'blur-sm select-none pointer-events-none' : ''}`}>
+        <div className={`${popupmodal ? 'blur-sm select-none pointer-events-none' : ''}`}>
           <div className='relative'>
             <div className='flex flex-col  mt-10 gap-4 items-center'>
 
@@ -204,7 +208,7 @@ const UserInput = () => {
                       {
                         preferencesData && (
                           <div>
-                            <h2 className='font-semibold mb-2'>Preferences:</h2>
+                            <div className='flex justify-between'><h2 className='font-semibold mb-2'>Preferences:</h2><span className='capitalize  text-blue-600  font-semibold text-sm cursor-pointer hover:text-blue-700 hover:underline ' onClick={editPreferences}>Edit</span></div>
                             <p>Allergies: <span>{preferencesData?.allergies?.map(a => a.name).join(", ") || "None"}</span> </p>
                             <p>Diet: <span>{preferencesData?.dietPreferences?.join(",") || "None"}</span> </p>
                             <p>Disliked Ingredient: <span>{preferencesData?.dislikes?.join(",") || "None"}</span> </p>
@@ -214,20 +218,18 @@ const UserInput = () => {
                     </div>
                   )
                 }
-                <div className='mt-4 flex gap-2 items-center '>
-                  <input type='text' placeholder='Add ingredient' value={newIngredients} onChange={(e) => setNewIngredients(e.target.value)} className='border border-gray-300 rounded-md px-2 py-1 flex-1 focus:outline-none focus:ring-2 focus:ring-blue-600 shadow-md' />
-                  <input type='text' placeholder='Value' value={newIngredientsValue} onChange={(e) => setNewIngredientsValue(e.target.value)} className='border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-600 shadow-md px-2 py-1 flex-1' />
-                  <button className='bg-blue-600 text-white px-3 py-1 rounded-md hover:bg-blue-700 cursor-pointer font-bold' onClick={addIngredient}> {loading ? '...' : 'Add'}</button>
-                </div>
+
               </div>
-              <div className='w-1/2 flex justify-center'><button
-                className='bg-blue-600 text-white px-3 py-1 rounded-md hover:bg-blue-700 cursor-pointer font-bold'
+              <div className='w-1/2 flex gap-4 justify-center'><button
+                disabled={preferencesData}
+                className={`bg-blue-600 text-white px-3 py-1 rounded-md hover:bg-blue-700  font-bold ${preferencesData ? 'cursor-not-allowed' : 'cursor-pointer'}`}
                 onClick={fetchRecipes}
               >
                 {loading ? '...' : 'Get Recipes'}
               </button>
                 <button
-                  className='bg-blue-600 text-white px-3 py-1 rounded-md hover:bg-blue-700 cursor-pointer font-bold'
+                  disabled={!preferencesData}
+                  className={`bg-blue-600 text-white px-3 py-1 rounded-md hover:bg-blue-700  font-bold ${preferencesData ? 'cursor-pointer' : 'cursor-not-allowed'}`}
                   onClick={finalRecipe}
                 >
                   {loading ? '...' : 'Get Final Recipes'}
@@ -272,7 +274,7 @@ const UserInput = () => {
         </div>
 
 
-        {popupmodal && (!preferencesData || Object.keys(preferencesData).length === 0) && (
+        {popupmodal && (
           <div className="fixed inset-0   flex justify-center items-center z-50">
             <div className="bg-white  rounded-lg p-8 max-w-md w-11/12 shadow-2xl">
               <h2 className="text-2xl font-semibold text-center text-blue-600 mb-6">
@@ -280,40 +282,42 @@ const UserInput = () => {
               </h2>
 
               <div className="relative">
-                <input
+                <div><span className='text-lg font-semibold'>Allergies/Intolerances: </span><input
                   type="text"
-                  placeholder="Please explain your needs..."
-                  value={preferences}
-                  onChange={(e) => setPreferences(e.target.value)}
+                  placeholder="Do you have any allergies/intolerances?"
+                  value={preferences.allergies}
+                  onChange={(e) => setPreferences(prev => ({ ...prev, allergies: e.target.value }))}
                   className="w-full py-2 px-4 rounded-md bg-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-600 text-lg font-semibold shadow-md"
-                />
+                /></div>
+                <div><span className='text-lg font-semibold'>Diet: </span><input
+                  type="text"
+                  placeholder="What's your diet preferences?"
+                  value={preferences.diet}
+                  onChange={(e) => setPreferences(prev => ({ ...prev, diet: e.target.value }))}
+                  className="w-full py-2 px-4 rounded-md bg-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-600 text-lg font-semibold shadow-md"
+                /></div>
+                <div><span className='text-lg font-semibold'>Disliked Ingredients: </span><input
+                  type="text"
+                  placeholder="Any disliked Ingredient? "
+                  value={preferences.dislikes}
+                  onChange={(e) => setPreferences(prev => ({ ...prev, dislikes: e.target.value }))}
+                  className="w-full py-2 px-4 rounded-md bg-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-600 text-lg font-semibold shadow-md"
+                /></div>
+
+              </div>
+
+
+              <div className='flex justify-center mt-4'>
                 <button
                   onClick={async () => {
                     await fetchPreferences();
 
                   }}
-                  className="absolute right-2 top-2 bg-blue-600 hover:bg-blue-700 text-white font-bold py-1 px-3 rounded-md shadow-md"
+                  className=" bg-blue-600 hover:bg-blue-700 text-white font-bold py-1 px-3 rounded-md shadow-md"
                 >
                   {loading ? "..." : "Extract"}
                 </button>
-              </div>
 
-
-              <div className="mt-6 text-blue-600 font-semibold capitalize space-y-1">
-                <p>Allergies: <span className="text-red-600">{preferencesData?.allergies?.map(a => a.name).join(", ") || "None"}</span></p>
-                <p>Diet preferences: <span className="text-red-600">{preferencesData?.dietPreferences?.join(", ") || "None"}</span></p>
-                <p>Disliked ingredient: <span className="text-red-600">{preferencesData?.dislikes?.join(", ") || "None"}</span></p>
-
-              </div>
-              <div className='flex justify-center mt-4'>
-                <button
-                  onClick={async () => {
-                    setPopupmodal(false);
-                  }}
-                  className=" bg-blue-600 hover:bg-blue-700  text-white font-bold py-1 px-3 rounded-md shadow-md"
-                >
-                  {loading ? "..." : "Submit"}
-                </button>
               </div>
             </div>
           </div>

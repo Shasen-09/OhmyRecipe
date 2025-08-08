@@ -53,7 +53,31 @@ const searchByIngredients = async (req, res) => {
   }
 };
 
-const searchByRecipe = async (req, res) => {
+const searchByRecipeSingleId = async (req, res) => {
+  try {
+    const { id } = req.query
+    if (!id) {
+      return res.status(400).json({
+        success: false,
+        message: 'Recipe ID is required'
+      });
+    }
+    const response = await axios.get(`https://api.spoonacular.com/recipes/${id}/information`, {
+      params: {
+        apiKey: API
+      }
+    })
+    res.json(response.data);
+
+  } catch (error) {
+    res.status(500).send({
+      success: false,
+      message: "Error to fetch by id"
+    })
+  }
+}
+
+const searchByRecipeMultipleId = async (req, res) => {
 
   try {
     const { ids } = req.query;
@@ -102,4 +126,4 @@ const complexSearch = async (req, res) => {
 }
 
 
-module.exports = { getPopularRecipes, searchByIngredients, searchByRecipe, complexSearch };
+module.exports = { getPopularRecipes, searchByIngredients, searchByRecipeSingleId, searchByRecipeMultipleId, complexSearch };
