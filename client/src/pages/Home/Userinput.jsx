@@ -10,7 +10,7 @@ const UserInput = () => {
   const [loading, setLoading] = useState(false);
   const [ingredients, setIngredients] = useState({});
 
-
+  const [recipeDetails, setRecipeDetails] = useState([]);
 
   const [recipes, setRecipe] = useState([]);
   const [popupmodal, setPopupmodal] = useState(false);
@@ -145,19 +145,30 @@ const UserInput = () => {
       };
       const res = await recipeServices.getFinalRecipe(userPreferencesData);
       console.log(userPreferencesData);
+
       console.log('Response:', res.data);
+      if (!res) {
+        console.log("There is no recipe as per your request")
+      }
       setRecipe(res.data.results);
+      const ids = res.data.results.map(recipe => recipe.id).join(",");
+
+      const res1 = await recipeServices.getDetailsById(ids);
+      console.log('Response 2: ', res1.data);
+      setRecipeDetails(res1.data);
 
     } catch (error) {
       console.log("Error in fetching recipes with preferences", error)
     } finally {
       setLoading(false);
+
     }
   }
   const editPreferences = () => {
     setPopupmodal(true);
     setPreferencesData('');
   }
+
 
 
 
@@ -184,7 +195,7 @@ const UserInput = () => {
                 />
 
                 <button
-                  className='absolute right-2 top-1/2 transform -translate-y-1/2 bg-blue-600 text-white font-bold px-3 py-1 rounded hover:bg-blue-700 '
+                  className='absolute right-2 top-1/2 transform -translate-y-1/2 bg-blue-600 text-white font-bold px-3 py-1 rounded hover:bg-blue-700 cursor-pointer'
                   onClick={handleSubmit}
                 >
                   {loading ? '...' : 'Extract'}
@@ -240,37 +251,57 @@ const UserInput = () => {
 
           {
             recipes.length > 0 && (
+              <div className="grid grid-cols-1 md:grid-cols-3 w-[97%] gap-10 p-4 mx-auto">
+                {recipes.map(recipe => {
 
-              <div className=' grid grid-cols-1 md:grid-cols-3 w-[97%]  gap-10 p-4 mx-auto'>
-                {
-                  recipes.map((recipe) =>
-                    <div key={recipe.id} className='flex flex-col gap-6  border border-none p-4 rounded shadow-lg items-center bg-gray-200'>
-                      <h2 className='text-center  font-semibold text-xl mb-1 line-clamp-1'>{recipe.title}</h2>
+                  const detail = recipeDetails.find(d => d.id === recipe.id) || {};
+
+                  return (
+                    <div key={recipe.id} className="flex flex-col gap-6 p-4 rounded shadow-lg items-center bg-gray-200">
+                      <h2 className="text-center font-bold text-xl mb-1 line-clamp-1">{recipe.title}</h2>
                       <img
-                        src={recipe.image}
-                        alt={recipe.title}
-                        className='w-[90%] mb-1 max-h-40 object-cover rounded mx-auto'
+                        src={recipe.image || detail.image}
+                        alt={recipe.title || detail.title}
+                        className="w-[90%] mb-1 max-h-40 object-cover rounded mx-auto"
                       />
-                      <div className="flex flex-col text-lg gap-1 justify-center items-center">
-                        <div className="flex gap-4 ">
-                          <span>Used Ingredients:</span>
-                          <span>{recipe.usedIngredientCount}</span>
-                        </div>
-                        <div className="flex gap-2">
-                          <span>Missing Ingredients:</span>
-                          <span>{recipe.missedIngredientCount}</span>
-                        </div>
 
-                      </div>
-                      <button className='justify-center w-[90%] text-lg font-semibold bg-blue-600 hover:bg-blue-700 cursor-pointer py-1 px-4 rounded-md shadow-md text-white flex gap-2  '>Go <FaArrowRight className='transform translate-y-1' /></button>
+                      {!detail.id ? (
+                        <div className="flex flex-col text-lg gap-1 justify-center items-center">
+                          <div className="flex gap-4">
+                            <span className='font-semibold'>Used Ingredients:</span>
+                            <span>{recipe.usedIngredientCount}</span>
+                          </div>
+                          <div className="flex gap-2">
+                            <span className='font-semibold'>Missing Ingredients:</span>
+                            <span>{recipe.missedIngredientCount}</span>
+                          </div>
+                        </div>
+                      ) : (
+                        <div className="w-[90%] flex flex-col text-lg gap-1 justify-center items-center text-center">
+                          <div className='whitespace-normal break-words'>
+                            <span className='font-semibold'>
+                              Diets: <span className='capitalize font-normal'>{Array.isArray(detail.diets) && detail.diets.length > 0
+                                ? detail.diets.join(", ")
+                                : "None"}</span>
+                            </span>
+                          </div>
+                          <div className="flex gap-2">
+                            <span className='font-semibold'>Ready in minutes:</span>
+                            <span>{detail.readyInMinutes || "N/A"}</span>
+                          </div>
+                        </div>
+                      )}
+
+                      <button className="justify-center w-[90%] text-lg font-semibold bg-blue-600 hover:bg-blue-700 cursor-pointer py-1 px-4 rounded-md shadow-md text-white flex gap-2">
+                        Go <FaArrowRight className="transform translate-y-1" />
+                      </button>
                     </div>
-                  )
-                }
-
+                  );
+                })}
               </div>
-
             )
           }
+
         </div>
 
 
@@ -313,7 +344,7 @@ const UserInput = () => {
                     await fetchPreferences();
 
                   }}
-                  className=" bg-blue-600 hover:bg-blue-700 text-white font-bold py-1 px-3 rounded-md shadow-md"
+                  className=" bg-blue-600 hover:bg-blue-700 text-white font-bold py-1 px-3 rounded-md shadow-md cursor-pointer"
                 >
                   {loading ? "..." : "Extract"}
                 </button>

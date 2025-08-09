@@ -48,6 +48,15 @@ const getFinalRecipe = async (userPreferencesData) => {
   return response;
 };
 
+const getDetailsById = async (ids) => {
+  const response = await axios.get('/api/recipes/searchMultipleId', {
+    params: { ids },
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  });
+  return response;
+}
 
-const recipeServices = { popularWeekServices, userInputServices, recipesByIngredients, userPreferences, getFinalRecipe }
+const recipeServices = { popularWeekServices, userInputServices, recipesByIngredients, userPreferences, getFinalRecipe, getDetailsById }
 export default recipeServices;
