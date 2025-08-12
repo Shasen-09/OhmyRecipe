@@ -11,7 +11,7 @@ const userMiddleware = async (req, res, next) => {
       });
     }
 
-    const token = authHeader.split(" ")[1]; // Expected format: "Bearer <token>"
+    const token = authHeader.split(" ")[1];
 
     if (!token) {
       return res.status(401).send({

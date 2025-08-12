@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import AuthServices from '../services/AuthServices';
 import NavBAr from './NavBAr';
@@ -6,6 +6,8 @@ import Userinput from './Home/Userinput';
 
 const Home = () => {
   const navigate = useNavigate();
+
+
 
   const token = localStorage.getItem("token");
   const user = JSON.parse(localStorage.getItem('user'));

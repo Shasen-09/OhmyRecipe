@@ -3,26 +3,24 @@ import recipeServices from '../../services/recipeServices';
 import { ImCross } from "react-icons/im";
 import { FaArrowRight } from "react-icons/fa";
 import pluralize from 'pluralize';
+import { useNavigate } from 'react-router-dom';
+import { useRecipes } from '../../context/RecipeContext';
+
 
 
 const UserInput = () => {
+  const { recipes, setRecipes, recipeDetails, setRecipeDetails, ingredients, setIngredients, preferencesData, setPreferencesData, preferences, setPreferences } = useRecipes();
   const [input, setInput] = useState('');
   const [loading, setLoading] = useState(false);
-  const [ingredients, setIngredients] = useState({});
 
-  const [recipeDetails, setRecipeDetails] = useState([]);
 
-  const [recipes, setRecipe] = useState([]);
+
   const [popupmodal, setPopupmodal] = useState(false);
 
-  const [preferences, setPreferences] = useState({
-    allergies: '',
-    diet: '',
-    dislikes: ''
-  });
-  const [preferencesData, setPreferencesData] = useState(null);
 
 
+
+  const navigate = useNavigate();
 
   const deleteIngredient = (key) => {
     const updatedIngredient = { ...ingredients };
@@ -91,9 +89,10 @@ const UserInput = () => {
     setLoading(true);
     try {
       const res = await recipeServices.recipesByIngredients(ingredients);
-      setRecipe(res.data);
+      setRecipes(res.data);
       setPopupmodal(true);
       console.log(res.data);
+
 
     } catch (error) {
       console.log(error);
@@ -150,7 +149,7 @@ const UserInput = () => {
       if (!res) {
         console.log("There is no recipe as per your request")
       }
-      setRecipe(res.data.results);
+      setRecipes(res.data.results);
       const ids = res.data.results.map(recipe => recipe.id).join(",");
 
       const res1 = await recipeServices.getDetailsById(ids);
@@ -243,11 +242,20 @@ const UserInput = () => {
                   className={`bg-blue-600 text-white px-3 py-1 rounded-md hover:bg-blue-700  font-bold ${preferencesData ? 'cursor-pointer' : 'cursor-not-allowed'}`}
                   onClick={finalRecipe}
                 >
-                  {loading ? '...' : 'Get Final Recipes'}
+                  {loading ? '...' : 'Get Recipes with preferences'}
                 </button></div>
             </div>
           </div>
 
+          <div>
+            {recipeDetails &&
+              recipeDetails.length > 0 ? (
+              <div>
+                <p className='text-center text-3xl text-blue-600 font-semibold py-5'>Suggested Recipes</p>
+
+              </div>
+            ) : null}
+          </div>
 
           {
             recipes.length > 0 && (
@@ -292,7 +300,8 @@ const UserInput = () => {
                         </div>
                       )}
 
-                      <button className="justify-center w-[90%] text-lg font-semibold bg-blue-600 hover:bg-blue-700 cursor-pointer py-1 px-4 rounded-md shadow-md text-white flex gap-2">
+                      <button className="justify-center w-[90%] text-lg font-semibold bg-blue-600 hover:bg-blue-700 cursor-pointer py-1 px-4 rounded-md shadow-md text-white flex gap-2"
+                        onClick={() => navigate(`/recipe/${recipe.id}`, { state: { recipeDetails: recipeDetails.find(d => d.id === recipe.id) } })}>
                         Go <FaArrowRight className="transform translate-y-1" />
                       </button>
                     </div>
