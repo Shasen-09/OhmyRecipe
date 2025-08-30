@@ -126,4 +126,56 @@ const complexSearch = async (req, res) => {
 }
 
 
-module.exports = { getPopularRecipes, searchByIngredients, searchByRecipeSingleId, searchByRecipeMultipleId, complexSearch };
+const ingredientsById = async (req, res) => {
+  try {
+    const { id } = req.query;
+    const response = await axios.get(`https://api.spoonacular.com/recipes/${id}/ingredientWidget.json`, {
+      params: {
+        apiKey: API,
+      }
+    });
+    res.json(response.data)
+  } catch (error) {
+    res.status(500).send({
+      success: false,
+      message: "Fetching ingredients failed"
+    })
+  }
+}
+
+const nutrientsById = async (req, res) => {
+  try {
+    const { id } = req.query;
+    const response = await axios.get(`https://api.spoonacular.com/recipes/${id}/nutritionWidget.json`, {
+      params: {
+        apiKey: API,
+      }
+    });
+    res.json(response.data)
+  } catch (error) {
+    res.status(500).send({
+      success: false,
+      message: "Fetching nutrients failed"
+    })
+  }
+}
+
+
+const classifyTaste = async (req, res) => {
+  try {
+    const { id } = req.query;
+    const response = await axios.get(`https://api.spoonacular.com/recipes/${id}/tasteWidget.json`, {
+      params: {
+        apiKey: API,
+      }
+    });
+    res.json(response.data)
+  } catch (error) {
+    res.status(500).send({
+      success: false,
+      message: "Fetching Taste error"
+    })
+  }
+
+}
+module.exports = { getPopularRecipes, searchByIngredients, searchByRecipeSingleId, searchByRecipeMultipleId, complexSearch, ingredientsById, nutrientsById, classifyTaste };

@@ -6,6 +6,7 @@ import Verification from './pages/Verification';
 import Home from './pages/Home';
 import RecipeInformation from './pages/Home/RecipeInformation';
 import { RecipeProvider } from './context/RecipeContext';
+import Bookmark from './pages/Navbar-pages/Bookmark';
 
 function App() {
 
@@ -20,6 +21,7 @@ function App() {
           <Route path="/verify" element={<Verification />} />
           <Route path="/home" element={<Home />} />
           <Route path="/recipe/:id" element={<RecipeInformation />} />
+          <Route path="/savedrecipe/:id" element={<Bookmark />} />
         </Routes>
       </RecipeProvider>
     </>

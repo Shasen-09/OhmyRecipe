@@ -12,9 +12,6 @@ const UserInput = () => {
   const { recipes, setRecipes, recipeDetails, setRecipeDetails, ingredients, setIngredients, preferencesData, setPreferencesData, preferences, setPreferences } = useRecipes();
   const [input, setInput] = useState('');
   const [loading, setLoading] = useState(false);
-
-
-
   const [popupmodal, setPopupmodal] = useState(false);
 
 

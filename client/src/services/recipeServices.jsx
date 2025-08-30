@@ -58,5 +58,25 @@ const getDetailsById = async (ids) => {
   return response;
 }
 
-const recipeServices = { popularWeekServices, userInputServices, recipesByIngredients, userPreferences, getFinalRecipe, getDetailsById }
+const getNutrientsDetails = async (id) => {
+  const response = await axios.get('/api/recipes/nutrientsById', {
+    params: { id },
+    headers: {
+      'Content-Type': 'application/json'
+    }
+  })
+  return response;
+}
+
+const getTaste = async (id) => {
+  const response = await axios.get('/api/recipes/tasteById', {
+    params: { id },
+    headers: {
+      'Content-Type': 'application/json'
+    }
+  })
+  return response;
+}
+
+const recipeServices = { popularWeekServices, userInputServices, recipesByIngredients, userPreferences, getFinalRecipe, getDetailsById, getNutrientsDetails, getTaste }
 export default recipeServices;
