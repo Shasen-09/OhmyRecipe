@@ -10,7 +10,7 @@ const sendGroqMessage = async (req, res) => {
     }
 
     const completion = await groq.chat.completions.create({
-      model: "llama3-70b-8192",
+      model: "openai/gpt-oss-20b",
       messages: [
         {
           role: "system",
@@ -103,7 +103,7 @@ const userPreferences = async (req, res) => {
       })
     }
     const completion = await groq.chat.completions.create({
-      model: "llama3-70b-8192",
+      model: "openai/gpt-oss-20b",
       messages: [
         {
           role: "system",
@@ -207,7 +207,7 @@ Respond ONLY with the JSON object as described. No extra text or markdown.
 `;
 
     const completion = await groq.chat.completions.create({
-      model: "llama3-70b-8192",
+      model: "openai/gpt-oss-20b",
       messages: [
         { role: "system", content: systemMessage },
       ],

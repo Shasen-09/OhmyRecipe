@@ -1,5 +1,6 @@
 const axios = require('axios');
 const { response } = require('express');
+const { param } = require('../routes/recipeRoute');
 
 const API = process.env.SPOONACULAR_API
 console.log(API);
@@ -178,4 +179,65 @@ const classifyTaste = async (req, res) => {
   }
 
 }
-module.exports = { getPopularRecipes, searchByIngredients, searchByRecipeSingleId, searchByRecipeMultipleId, complexSearch, ingredientsById, nutrientsById, classifyTaste };
+
+
+
+const classifyCuisine = async (req, res) => {
+  try {
+    const { title, ingredientList, language = "en" } = req.body;
+    const response = await axios.post('https://api.spoonacular.com/recipes/cuisine', {
+      title,
+      ingredientList,
+      language
+    }, {
+      params: {
+        apiKey: API
+      }
+    })
+    res.json(response.data)
+  } catch (error) {
+    res.status(500).send({
+      success: false,
+      message: "Fetching Cuisine failed"
+    })
+  }
+}
+
+const similarRecipes = async (req, res) => {
+  try {
+    const { id } = req.query;
+    const response = await axios.get(`https://api.spoonacular.com/recipes/${id}/similar`, {
+      params: {
+        apiKey: API,
+        number: 5,
+      }
+    })
+    res.json(response.data)
+  } catch (error) {
+    res.status(500).send({
+      success: false,
+      message: "Fetching similar Recipes failed"
+    })
+
+  }
+}
+
+const getEquipment = async (req, res) => {
+  try {
+    const { id } = req.query;
+    const response = await axios.get(`https://api.spoonacular.com/recipes/${id}/equipmentWidget.json`, {
+      params: {
+        apiKey: API
+      }
+    }
+    )
+    res.json(response.data)
+  } catch (error) {
+    res.status(500).send({
+      success: false,
+      message: "Fetching get equipment failed"
+    })
+  }
+}
+
+module.exports = { getPopularRecipes, searchByIngredients, searchByRecipeSingleId, searchByRecipeMultipleId, complexSearch, ingredientsById, nutrientsById, classifyTaste, classifyCuisine, similarRecipes, getEquipment };
