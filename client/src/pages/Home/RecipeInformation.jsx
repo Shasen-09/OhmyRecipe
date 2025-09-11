@@ -55,11 +55,7 @@ const RecipeInformation = () => {
     fetchRecipedetails();
   }, [id, navigate]);
 
-
-
   useEffect(() => {
-
-
     const fetchNutrients = async () => {
       try {
         const res = await recipeServices.getNutrientsDetails(id);
@@ -111,17 +107,15 @@ const RecipeInformation = () => {
   }, [bookmarks]);
 
   if (!recipeDetails) return null;
-
-
   ;
 
   return (
     <>
       <NavBAr />
       <>
-        <div className=" absolute mt-10 right-0 z-50">
+        <div className="absolute mt-10 right-0 z-50">
           <button
-            onClick={() => { toggleBookmark(recipeDetails); console.log(bookmarks) }}
+            onClick={() => toggleBookmark(recipeDetails)}
             className="px-4 py-2 rounded-lg flex items-center justify-center cursor-pointer"
           >
             {isBookmarked(recipeDetails.id) ? (
@@ -130,8 +124,8 @@ const RecipeInformation = () => {
               <FaRegHeart className="text-gray-400 text-3xl" />
             )}
           </button>
-
         </div>
+
 
         <div className="w-[600px] h-[600px] bg-gradient-to-tr from-blue-600/20 to-pink-500/20 rounded-full -left-28 -top-0.05 absolute blur-[50px] pointer-events-none"></div>
 

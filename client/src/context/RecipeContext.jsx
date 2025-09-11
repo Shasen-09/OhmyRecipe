@@ -1,4 +1,5 @@
-import { createContext, useContext, useState } from 'react';
+import { createContext, useContext, useState, useEffect } from 'react';
+import bookmarkServices from '../services/bookmarkServices';
 
 const RecipeContext = createContext();
 
@@ -15,15 +16,28 @@ export function RecipeProvider({ children }) {
 
   const [bookmarks, setBookmarks] = useState([]);
 
-  const toggleBookmark = (recipe) => {
-    setBookmarks((prev) => {
-      if (prev.find((item) => item.id === recipe.id)) {
-        return prev.filter((item) => item.id !== recipe.id);
-      } else {
-        return [...prev, recipe];
-      }
-    });
+
+  useEffect(() => {
+    const fetchBookmarks = async () => {
+      const data = await bookmarkServices.getBookmarks();
+      if (data) setBookmarks(data);
+    };
+    fetchBookmarks();
+  }, []);
+
+  const toggleBookmark = async (recipe) => {
+    const exists = bookmarks.find((item) => item.id === recipe.id);
+    let updatedBookmarks;
+
+    if (exists) {
+      updatedBookmarks = await bookmarkServices.removeBookmark(recipe.id);
+    } else {
+      updatedBookmarks = await bookmarkServices.addBookmark(recipe);
+    }
+
+    if (updatedBookmarks) setBookmarks(updatedBookmarks);
   };
+
   const isBookmarked = (id) => bookmarks.some((item) => item.id === id);
 
   return (
