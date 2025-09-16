@@ -12,12 +12,13 @@ import {
   faUser,
   faUserCircle
 } from '@fortawesome/free-solid-svg-icons';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { logout } from '../redux/store/authSlice'; // Adjust path if needed
 
 const NavBar = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const dispatch = useDispatch();
 
   // Use token from Redux state instead of localStorage for better sync
@@ -66,7 +67,14 @@ const NavBar = () => {
           <FontAwesomeIcon icon={faToggleOn} className="text-2xl" />
         </button>
 
-        <FontAwesomeIcon icon={faBookmark} className="text-2xl" />
+        {/* Saved Recipes*/}
+        <button onClick={() => {
+          navigate('/bookmark')
+        }}><FontAwesomeIcon icon={faBookmark} className={`text-2xl ${location.pathname === "/bookmark" ? "text-yellow-400" : "text-white"
+          }`} /></button>
+
+
+
         <FontAwesomeIcon icon={faBell} className="text-2xl" />
 
         {/* User Icon + Dropdown */}

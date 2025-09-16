@@ -4,6 +4,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { verifyUser } from '../redux/store/authSlice';
+import axios from 'axios';
 
 const Verification = () => {
   const dispatch = useDispatch();
@@ -11,33 +12,31 @@ const Verification = () => {
   const user = JSON.parse(localStorage.getItem('user'));
   const email = user?.email;
 
-  const { loading, error, isverified } = useSelector(state => state.auth);
-
+  const { loading, error, isVerified } = useSelector(state => state.auth);
   const [otp, setOtp] = useState(Array(6).fill(''));
   const [timer, setTimer] = useState(60);
+  const [resendLoading, setResendLoading] = useState(false);
   const inputs = useRef([]);
 
-
+  // Countdown timer
   useEffect(() => {
-    if (timer > 0) {
-      const interval = setInterval(() => setTimer(t => t - 1), 1000);
-      return () => clearInterval(interval);
-    }
+    if (timer <= 0) return;
+    const interval = setInterval(() => setTimer(t => t - 1), 1000);
+    return () => clearInterval(interval);
   }, [timer]);
 
+  // Navigate if verified
   useEffect(() => {
-    if (isverified) navigate('/home');
-  }, [isverified, navigate]);
+    if (isVerified) navigate('/home');
+  }, [isVerified, navigate]);
 
   const handleChange = (e, index) => {
     const value = e.target.value;
     if (/^\d?$/.test(value)) {
-      const updatedOtp = [...otp];
-      updatedOtp[index] = value;
-      setOtp(updatedOtp);
-      if (value && index < 5) {
-        inputs.current[index + 1]?.focus();
-      }
+      const newOtp = [...otp];
+      newOtp[index] = value;
+      setOtp(newOtp);
+      if (value && index < 5) inputs.current[index + 1]?.focus();
     }
   };
 
@@ -50,7 +49,8 @@ const Verification = () => {
   const handleVerify = (e) => {
     e.preventDefault();
     if (!email) {
-      alert('Email is missing. Please register first.');
+      alert('Email missing. Please register first.');
+      localStorage.clear();
       navigate('/register');
       return;
     }
@@ -61,10 +61,34 @@ const Verification = () => {
     dispatch(verifyUser({ email, otp: otp.join('') }));
   };
 
-  const handleResend = () => {
-    // You can add a resend OTP API call here if needed
-    alert('OTP resent to your email.');
-    setTimer(60);
+  const handleResend = async () => {
+    if (!email) {
+      alert('Email not found. Please register first.');
+      localStorage.clear();
+      navigate('/register');
+      return;
+    }
+
+    if (resendLoading) return; // prevent multiple clicks
+    setResendLoading(true);
+
+    try {
+      const response = await axios.post('/user/send-otp', { email });
+
+      if (response.data.success) {
+        setOtp(Array(6).fill('')); // clear inputs
+        setTimer(60); // reset timer
+        inputs.current[0]?.focus(); // focus first input
+        alert('OTP resent to your email!');
+      } else {
+        alert(response.data.message || 'Failed to resend OTP');
+      }
+    } catch (err) {
+      console.error('Resend OTP error:', err);
+      alert('Resend OTP failed. Please try again.');
+    } finally {
+      setResendLoading(false);
+    }
   };
 
   return (
@@ -96,8 +120,13 @@ const Verification = () => {
             {timer > 0 ? (
               <>Resend code in <span className="font-semibold">{timer}s</span></>
             ) : (
-              <button type="button" className="text-blue-600 hover:underline" onClick={handleResend}>
-                Resend Code
+              <button
+                type="button"
+                className={`text-blue-600 hover:underline ${resendLoading ? 'opacity-50 cursor-not-allowed' : ''}`}
+                onClick={handleResend}
+                disabled={resendLoading}
+              >
+                {resendLoading ? 'Resending...' : 'Resend Code'}
               </button>
             )}
           </div>
@@ -114,7 +143,10 @@ const Verification = () => {
 
           <button
             type="button"
-            onClick={() => navigate('/register')}
+            onClick={() => {
+              localStorage.clear();
+              navigate('/register');
+            }}
             className="text-sm text-blue-600 hover:underline"
           >
             Cancel

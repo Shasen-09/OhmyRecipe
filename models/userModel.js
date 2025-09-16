@@ -41,6 +41,9 @@ const userSchema = new mongoose.Schema({
     default: false
   },
   bookmarks: [bookmarkSchema],
+  resetPasswordToken: String,
+  resetPasswordExpires: Date,
+
 }, { timestamps: true });
 
 userSchema.index({ "bookmarks.id": 1 });

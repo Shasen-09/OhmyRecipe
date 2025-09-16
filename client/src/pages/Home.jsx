@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import AuthServices from '../services/AuthServices';
 import NavBAr from './NavBAr';
@@ -6,16 +6,8 @@ import Userinput from './Home/Userinput';
 
 const Home = () => {
   const navigate = useNavigate();
-
-
-
   const token = localStorage.getItem("token");
   const user = JSON.parse(localStorage.getItem('user'));
-
-  const logOut = () => {
-    localStorage.removeItem("user");
-    navigate('/login');
-  }
 
   useEffect(() => {
     const checkAccess = async () => {
@@ -25,8 +17,8 @@ const Home = () => {
         return;
       }
 
-      const isverified = user.isverified === true || user.isverified === 'true';
-      if (!isverified) {
+      const isVerified = user.isVerified === true || user.isVerified === 'true';
+      if (!isVerified) {
         alert("Please verify your account first!");
         navigate('/verify'); // redirect to your verification page, not '/'
         return;

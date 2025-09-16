@@ -1,14 +1,13 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import AuthServices from "../../services/AuthServices";
 
-
-
+// ===== ASYNC THUNKS =====
 export const loginUser = createAsyncThunk(
   'auth/loginUser',
   async (credentials, { rejectWithValue }) => {
     try {
       const response = await AuthServices.loginService(credentials);
-      return response.data;
+      return response.data; // expect { success, token, user }
     } catch (error) {
       return rejectWithValue(error.response?.data?.message || 'Login Failed');
     }
@@ -20,10 +19,9 @@ export const registerUser = createAsyncThunk(
   async (userData, { rejectWithValue }) => {
     try {
       const response = await AuthServices.registerService(userData);
-
-      return response.data;
+      return response.data; // expect { user, token }
     } catch (error) {
-      return rejectWithValue(error.response?.data?.message || 'Registeration failed');
+      return rejectWithValue(error.response?.data?.message || 'Registration Failed');
     }
   }
 );
@@ -33,24 +31,25 @@ export const verifyUser = createAsyncThunk(
   async (data, { rejectWithValue }) => {
     try {
       const response = await AuthServices.verifyService(data);
-      return response.data;
+      return response.data; // expect { user, token? }
     } catch (error) {
-      return rejectWithValue(error.response?.data?.message || 'verification failed');
+      return rejectWithValue(error.response?.data?.message || 'Verification Failed');
     }
   }
-)
+);
 
-// 🧱 2. Initial state for auth
+// ===== INITIAL STATE =====
 const initialState = {
   user: JSON.parse(localStorage.getItem('user')) || null,
   token: localStorage.getItem('token') || null,
   loading: false,
-  isverified: false,
+  isVerified: localStorage.getItem('user')
+    ? JSON.parse(localStorage.getItem('user')).isVerified
+    : false,
   error: null,
-
 };
 
-// 🧩 3. Create the auth slice
+// ===== SLICE =====
 const authSlice = createSlice({
   name: 'auth',
   initialState,
@@ -58,15 +57,16 @@ const authSlice = createSlice({
     logout(state) {
       state.user = null;
       state.token = null;
+      state.isVerified = false;
       state.error = null;
       state.loading = false;
-      state.isverified = false;
-      localStorage.removeItem('token');
       localStorage.removeItem('user');
+      localStorage.removeItem('token');
     }
   },
   extraReducers: (builder) => {
     builder
+      // ===== LOGIN =====
       .addCase(loginUser.pending, (state) => {
         state.loading = true;
         state.error = null;
@@ -74,59 +74,66 @@ const authSlice = createSlice({
       .addCase(loginUser.fulfilled, (state, action) => {
         state.loading = false;
         const { token, user } = action.payload;
-        state.user = user;
+
+        state.user = user;           // save full user
         state.token = token;
-        localStorage.setItem('token', token);
+        state.isVerified = user.isVerified;
+
         localStorage.setItem('user', JSON.stringify(user));
+        localStorage.setItem('token', token);
       })
       .addCase(loginUser.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload || 'Login failed';
       })
 
-      /* For register user case */
+      // ===== REGISTER =====
       .addCase(registerUser.pending, (state) => {
         state.loading = true;
         state.error = null;
       })
       .addCase(registerUser.fulfilled, (state, action) => {
         state.loading = false;
-        state.user = action.payload;
-        state.isverified = false;
-        state.user = action.payload.user;
-        localStorage.setItem('user', JSON.stringify(state.user));
+        const { user, token } = action.payload;
 
+        state.user = user;           // save full user
+        state.token = token || null;
+        state.isVerified = user.isVerified;
+
+        localStorage.setItem('user', JSON.stringify(user));
+        if (token) localStorage.setItem('token', token);
       })
-
       .addCase(registerUser.rejected, (state, action) => {
         state.loading = false;
-        state.error = action.payload;
+        state.error = action.payload || 'Registration failed';
       })
 
-      /* For verification case */
+      // ===== VERIFY =====
       .addCase(verifyUser.pending, (state) => {
-        state.loading = false;
+        state.loading = true;
         state.error = null;
       })
       .addCase(verifyUser.fulfilled, (state, action) => {
         state.loading = false;
-        state.isverified = true;
-        if (state.user && action.payload?.user) {
-          state.user.isverified = action.payload.user.isverified;
+        const { user: verifiedUser, token } = action.payload;
+
+        if (state.user) {
+          state.user = { ...state.user, ...verifiedUser }; // merge full user info
+          state.isVerified = verifiedUser.isVerified;
           localStorage.setItem('user', JSON.stringify(state.user));
         }
-        if (action.payload?.token) {
-          state.token = action.payload.token;
-          localStorage.setItem('token', action.payload.token);
+
+        if (token) {
+          state.token = token;
+          localStorage.setItem('token', token);
         }
       })
       .addCase(verifyUser.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload || 'Verification failed';
-      })
+      });
   }
 });
 
-// 🔄 Export logout action and reducer
 export const { logout } = authSlice.actions;
 export default authSlice.reducer;

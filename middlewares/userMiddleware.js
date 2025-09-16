@@ -18,7 +18,6 @@ const userMiddleware = async (req, res, next) => {
         return res.status(401).json({ success: false, message: "Unauthorized user" });
       }
 
-      // ✅ Set user info here
       req.user = { _id: decoded.id };
       next();
     });

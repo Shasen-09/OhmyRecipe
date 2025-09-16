@@ -1,22 +1,25 @@
 import axios from "axios";
 
-const token = localStorage.getItem("token");
-
 const getBookmarks = async () => {
   try {
+    const token = localStorage.getItem("token");
+    if (!token) return [];
+
     const response = await axios.get("/api/bookmark", {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
+      headers: { Authorization: `Bearer ${token}` },
     });
+
+
     return response.data;
   } catch (error) {
     console.error("Error fetching bookmarks:", error.response?.data || error.message);
+    return [];
   }
 };
 
 const addBookmark = async (recipe) => {
   try {
+    const token = localStorage.getItem("token");
     const response = await axios.post(
       "/api/bookmark",
       {
@@ -39,6 +42,7 @@ const addBookmark = async (recipe) => {
 
 const removeBookmark = async (recipeId) => {
   try {
+    const token = localStorage.getItem("token");
     const response = await axios.delete(`/api/bookmark/${recipeId}`, {
       headers: {
         Authorization: `Bearer ${token}`,
@@ -51,6 +55,5 @@ const removeBookmark = async (recipeId) => {
   }
 };
 
-
-const bookmarkServices = { getBookmarks, addBookmark, removeBookmark }
+const bookmarkServices = { getBookmarks, addBookmark, removeBookmark };
 export default bookmarkServices;

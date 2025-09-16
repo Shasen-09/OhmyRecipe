@@ -12,7 +12,10 @@ const transporter = nodemailer.createTransport({
   auth: {
     user: process.env.EMAIL_USER,
     pass: process.env.EMAIL_PASS
-  }
+  },
+  tls: {
+    rejectUnauthorized: false,
+  },
 })
 
 const generateOtp = () => {
@@ -48,7 +51,7 @@ const loginController = async (req, res) => {
         id: user._id,
         email: user.email,
         username: user.username,
-        isverified: user.isVerified
+        isVerified: user.isVerified
       }
 
     })
@@ -138,7 +141,7 @@ const sendOtpController = async (req, res) => {
     }
 
     const otp = generateOtp();
-    const otpExpires = new Date(Date.now() + 5 * 60 * 1000);
+    const otpExpires = new Date(Date.now() + 1 * 60 * 1000);
 
     user.otp = otp;
     user.otpExpires = otpExpires;
@@ -148,7 +151,7 @@ const sendOtpController = async (req, res) => {
       from: process.env.EMAIL_USER,
       to: email,
       subject: "Verify your account",
-      text: `Your OTP is ${otp}. It expires in 5 minutes.`
+      text: `Your OTP is ${otp}. It expires in 60 seconds.`
     };
 
     await transporter.sendMail(mailOptions);
@@ -227,7 +230,7 @@ const verifyOtpController = async (req, res) => {
       token,
       user: {
         email: user.email,
-        isverified: user.isVerified,
+        isVerified: user.isVerified,
       }
     });
 
@@ -249,4 +252,7 @@ const homeController = (req, res) => {
 
 }
 
-module.exports = { loginController, registerController, verifyOtpController, homeController };
+
+
+
+module.exports = { loginController, registerController, verifyOtpController, homeController, sendOtpController, transporter };

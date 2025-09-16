@@ -16,7 +16,7 @@ const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
-  // If already logged in, redirect
+
   React.useEffect(() => {
     if (user) navigate('/home');
   }, [user, navigate]);
@@ -33,7 +33,7 @@ const Login = () => {
       const resultAction = await dispatch(loginUser({ email, password }));
 
       if (loginUser.fulfilled.match(resultAction)) {
-        if (!resultAction.payload.user.isverified) {
+        if (!resultAction.payload.user.isVerified) {
           alert("User is not verified");
           return;
         }
@@ -41,8 +41,9 @@ const Login = () => {
       } else {
         alert(resultAction.payload || 'Login failed');
       }
-    } catch (err) {
+    } catch (error) {
       alert('Unexpected error occurred');
+      console.log(error)
     }
   };
 
