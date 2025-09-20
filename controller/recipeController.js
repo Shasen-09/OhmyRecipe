@@ -126,7 +126,6 @@ const complexSearch = async (req, res) => {
   }
 }
 
-
 const ingredientsById = async (req, res) => {
   try {
     const { id } = req.query;
@@ -161,7 +160,6 @@ const nutrientsById = async (req, res) => {
   }
 }
 
-
 const classifyTaste = async (req, res) => {
   try {
     const { id } = req.query;
@@ -179,8 +177,6 @@ const classifyTaste = async (req, res) => {
   }
 
 }
-
-
 
 const classifyCuisine = async (req, res) => {
   try {

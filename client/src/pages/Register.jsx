@@ -23,7 +23,7 @@ const Register = () => {
       navigate('/verify')
     }
   }, [user, isverified, navigate])
-  //register
+
   const registerHandler = async (e) => {
     e.preventDefault();
 

@@ -1,4 +1,4 @@
-const Users = require("../models/userModel"); // match your model filename
+const Users = require("../models/userModel");
 
 
 const getBookmarks = async (req, res) => {

@@ -35,7 +35,7 @@ const Footer = () => {
     <footer className="bg-blue-500 px-6 py-10 text-white">
       <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between gap-10">
 
-        {/* Left side: Thank you & social icons */}
+
         <div className="md:w-1/3">
           <p className="text-lg font-semibold mb-4">Thank you for Visiting</p>
           <div className="flex gap-4">

@@ -4,9 +4,6 @@ const JWT = require("jsonwebtoken");
 const nodemailer = require("nodemailer");
 
 
-
-//Otp
-
 const transporter = nodemailer.createTransport({
   service: 'gmail',
   auth: {
@@ -23,7 +20,7 @@ const generateOtp = () => {
 };
 
 
-//Login
+
 const loginController = async (req, res) => {
   try {
     const { email, password } = req.body;
@@ -68,7 +65,7 @@ const loginController = async (req, res) => {
   }
 }
 
-//Register
+
 const registerController = async (req, res) => {
   try {
     const { username, email, password, contact, confirmpassword } = req.body;
@@ -208,7 +205,7 @@ const verifyOtpController = async (req, res) => {
       });
     }
 
-    // Safe check for otpExpires
+
     if (!user.otpExpires || new Date(user.otpExpires).getTime() < Date.now()) {
       return res.status(400).send({
         success: false,

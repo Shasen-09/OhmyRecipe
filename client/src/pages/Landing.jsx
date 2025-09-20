@@ -23,7 +23,7 @@ const Landing = () => {
       <div className='w-[600px] h-[600px] bg-gradient-to-tr from-blue-600/20 to-pink-500/20 rounded-full -left-28 -top-0.05 absolute blur-[50px] pointer-events-none'></div>
 
       <div className="items-center justify-center mt-10">
-        <h1 className="text-6xl font-bold mb-10 text-red-500 hover:opacity-50 text-center">Bhok lagyo - <span className=' text-blue-600 '>K khane ta?
+        <h1 className="text-6xl font-bold mb-10 text-red-500 hover:opacity-50 text-center">Shall we <span className=' text-blue-600 '>Cook?
         </span>
         </h1>
 

@@ -9,7 +9,7 @@ const Bookmark = () => {
   const [bookmarks, setBookmarks] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  // Fetch bookmarks function
+
   const fetchBookmarks = useCallback(async () => {
     const token = localStorage.getItem("token");
     if (!token) {
@@ -31,23 +31,23 @@ const Bookmark = () => {
     }
   }, [navigate]);
 
-  // Fetch on component mount
+
   useEffect(() => {
     fetchBookmarks();
   }, [fetchBookmarks]);
 
-  // Handle bookmark removal (optimistic + silent fetch)
+
   const handleRemove = async (recipeId) => {
-    // Remove from UI immediately
+
     setBookmarks((prev) => prev.filter((r) => r.id !== recipeId));
 
     try {
       await bookmarkServices.removeBookmark(recipeId);
-      // Re-fetch silently to sync with backend
+
       fetchBookmarks();
     } catch (err) {
       console.error("Failed to remove bookmark:", err);
-      // Rollback if needed
+
       fetchBookmarks();
     }
   };
@@ -69,13 +69,13 @@ const Bookmark = () => {
                 key={recipe.id}
                 className="relative bg-gray-200 rounded-lg shadow-lg overflow-hidden flex flex-col items-center p-4 hover:shadow-2xl transition-shadow cursor-pointer"
               >
-                {/* Heart icon for removal */}
+
                 <FaHeart
                   onClick={() => handleRemove(recipe.id)}
                   className="absolute top-2 right-2 text-red-600 text-2xl cursor-pointer hover:text-red-700 transition-colors duration-200 z-10"
                 />
 
-                {/* Recipe Image */}
+
                 <img
                   src={recipe.image || "https://via.placeholder.com/300"}
                   alt={recipe.title}
@@ -85,7 +85,7 @@ const Bookmark = () => {
                   }
                 />
 
-                {/* Recipe Title */}
+
                 <h3
                   className="text-lg font-semibold text-center line-clamp-2"
                   onClick={() =>
