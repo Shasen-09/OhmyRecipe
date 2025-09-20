@@ -1,13 +1,13 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import AuthServices from "../../services/AuthServices";
 
-// ===== ASYNC THUNKS =====
+
 export const loginUser = createAsyncThunk(
   'auth/loginUser',
   async (credentials, { rejectWithValue }) => {
     try {
       const response = await AuthServices.loginService(credentials);
-      return response.data; // expect { success, token, user }
+      return response.data;
     } catch (error) {
       return rejectWithValue(error.response?.data?.message || 'Login Failed');
     }
@@ -19,7 +19,7 @@ export const registerUser = createAsyncThunk(
   async (userData, { rejectWithValue }) => {
     try {
       const response = await AuthServices.registerService(userData);
-      return response.data; // expect { user, token }
+      return response.data;
     } catch (error) {
       return rejectWithValue(error.response?.data?.message || 'Registration Failed');
     }
@@ -31,14 +31,14 @@ export const verifyUser = createAsyncThunk(
   async (data, { rejectWithValue }) => {
     try {
       const response = await AuthServices.verifyService(data);
-      return response.data; // expect { user, token? }
+      return response.data;
     } catch (error) {
       return rejectWithValue(error.response?.data?.message || 'Verification Failed');
     }
   }
 );
 
-// ===== INITIAL STATE =====
+
 const initialState = {
   user: JSON.parse(localStorage.getItem('user')) || null,
   token: localStorage.getItem('token') || null,
@@ -49,7 +49,7 @@ const initialState = {
   error: null,
 };
 
-// ===== SLICE =====
+
 const authSlice = createSlice({
   name: 'auth',
   initialState,
@@ -66,7 +66,7 @@ const authSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
-      // ===== LOGIN =====
+
       .addCase(loginUser.pending, (state) => {
         state.loading = true;
         state.error = null;
@@ -75,7 +75,7 @@ const authSlice = createSlice({
         state.loading = false;
         const { token, user } = action.payload;
 
-        state.user = user;           // save full user
+        state.user = user;
         state.token = token;
         state.isVerified = user.isVerified;
 
@@ -87,7 +87,7 @@ const authSlice = createSlice({
         state.error = action.payload || 'Login failed';
       })
 
-      // ===== REGISTER =====
+
       .addCase(registerUser.pending, (state) => {
         state.loading = true;
         state.error = null;
@@ -96,7 +96,7 @@ const authSlice = createSlice({
         state.loading = false;
         const { user, token } = action.payload;
 
-        state.user = user;           // save full user
+        state.user = user;
         state.token = token || null;
         state.isVerified = user.isVerified;
 
@@ -108,7 +108,7 @@ const authSlice = createSlice({
         state.error = action.payload || 'Registration failed';
       })
 
-      // ===== VERIFY =====
+
       .addCase(verifyUser.pending, (state) => {
         state.loading = true;
         state.error = null;
@@ -118,8 +118,7 @@ const authSlice = createSlice({
         const { user: verifiedUser, token } = action.payload;
 
         if (state.user) {
-          state.user = { ...state.user, ...verifiedUser }; // merge full user info
-          state.isVerified = verifiedUser.isVerified;
+          state.user = { ...state.user, ...verifiedUser };
           localStorage.setItem('user', JSON.stringify(state.user));
         }
 

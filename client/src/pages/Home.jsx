@@ -6,7 +6,7 @@ import Userinput from './Home/Userinput';
 
 const Home = () => {
   const navigate = useNavigate();
-  const token = localStorage.getItem("token");
+  const token = localStorage.getItem('token');
   const user = JSON.parse(localStorage.getItem('user'));
 
   useEffect(() => {
@@ -20,8 +20,7 @@ const Home = () => {
       const isVerified = user.isVerified === true || user.isVerified === 'true';
       if (!isVerified) {
         alert("Please verify your account first!");
-        navigate('/verify'); // redirect to your verification page, not '/'
-        return;
+        navigate('/verify');
       }
 
       try {
@@ -29,6 +28,8 @@ const Home = () => {
         alert(response.data.message);
       } catch (error) {
         alert("Failed to access home data. Please login again.");
+        localStorage.removeItem('token');
+        localStorage.removeItem('user');
         navigate('/login');
         console.log(error);
       }
