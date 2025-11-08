@@ -8,20 +8,21 @@ import {
   faGear,
   faMagnifyingGlass,
   faRightFromBracket,
-  faToggleOn,
+
   faUser,
   faUserCircle
 } from '@fortawesome/free-solid-svg-icons';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { logout } from '../redux/store/authSlice'; // Adjust path if needed
+import { logout } from '../redux/store/authSlice';
+import { FaHome } from "react-icons/fa";
 
 const NavBar = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const dispatch = useDispatch();
 
-  // Use token from Redux state instead of localStorage for better sync
+
   const token = useSelector((state) => state.auth.token);
 
   const [dropdownOpen, setDropDownOpen] = useState(false);
@@ -30,7 +31,7 @@ const NavBar = () => {
   const toggleDropdown = () => setDropDownOpen(prev => !prev);
 
   const handleLogout = () => {
-    dispatch(logout());  // Clear redux auth state
+    dispatch(logout());
     setDropDownOpen(false);
     navigate('/');
   };
@@ -46,7 +47,7 @@ const NavBar = () => {
   }, []);
 
   return (
-    <nav className="bar h-12 flex items-center sticky top-0 z-50 px-4 text-white font-semibold shadow-md bg-gradient-to-r from-blue-200 via-blue-500 to-blue-700 gap-5">
+    <nav className="bar h-12 flex items-center sticky top-0 z-50 px-4 text-white font-semibold shadow-md bg-gradient-to-r from-blue-200 via-blue-500 to-blue-700 gap-5 ">
       <div className="flex flex-row w-full gap-5">
         <FontAwesomeIcon icon={faBowlFood} className="text-3xl text-white" />
         <div className="relative flex-1">
@@ -57,27 +58,23 @@ const NavBar = () => {
           />
           <FontAwesomeIcon
             icon={faMagnifyingGlass}
-            className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500"
+            className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 cursor-pointer"
           />
         </div>
       </div>
 
       <div className="flex items-center gap-5">
-        <button>
-          <FontAwesomeIcon icon={faToggleOn} className="text-2xl" />
+        <button onClick={() => navigate("/home")}>
+          <FaHome className="text-3xl text-white cursor-pointer" />
         </button>
 
-        {/* Saved Recipes*/}
         <button onClick={() => {
           navigate('/bookmark')
-        }}><FontAwesomeIcon icon={faBookmark} className={`text-2xl ${location.pathname === "/bookmark" ? "text-yellow-400" : "text-white"
+        }}><FontAwesomeIcon icon={faBookmark} className={`text-2xl cursor-pointer ${location.pathname === "/bookmark" ? "text-yellow-400" : "text-white"
           }`} /></button>
+        <FontAwesomeIcon icon={faBell} className="text-2xl cursor-pointer" />
 
 
-
-        <FontAwesomeIcon icon={faBell} className="text-2xl" />
-
-        {/* User Icon + Dropdown */}
         <div className="relative" ref={dropdownRef}>
           <button onClick={toggleDropdown}>
             <FontAwesomeIcon icon={faUser} className="text-2xl hover:bg-gray-500 cursor-pointer" />

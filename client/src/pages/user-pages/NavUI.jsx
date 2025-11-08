@@ -6,9 +6,9 @@ import {
   faBowlFood,
   faMagnifyingGlass,
   faRightFromBracket,
-  faToggleOn
 } from '@fortawesome/free-solid-svg-icons';
 import { useNavigate } from 'react-router-dom';
+import { FaHome } from "react-icons/fa";
 
 const NavUI = () => {
   const navigate = useNavigate();
@@ -18,7 +18,7 @@ const NavUI = () => {
   }
   return (
     <nav className="bar h-12 flex items-center sticky top-0 z-50 px-4 text-white font-semibold shadow-md bg-gradient-to-r from-blue-200 via-blue-500 to-blue-700 gap-5">
-      <div className="flex flex-row w-full gap-5">
+      <div className="flex flex-row w-full gap-5 cursor-not-allowed">
         <FontAwesomeIcon icon={faBowlFood} className="text-3xl text-white" />
         <div className="relative flex-1">
           <input
@@ -35,7 +35,7 @@ const NavUI = () => {
       </div>
 
       <div className="flex items-center gap-5 cursor-not-allowed">
-        <FontAwesomeIcon icon={faToggleOn} className="text-2xl" />
+        <FaHome className='text-3xl text-white' />
         <FontAwesomeIcon icon={faBookmark} className="text-2xl" />
         <FontAwesomeIcon icon={faBell} className="text-2xl" />
         <FontAwesomeIcon icon={faRightFromBracket} className="text-2xl hover:text-3xl cursor-pointer" onClick={handleClick} />

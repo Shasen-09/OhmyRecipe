@@ -1,33 +1,34 @@
 import React from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faFacebook, faInstagram, faLinkedin } from '@fortawesome/free-brands-svg-icons';
+import { Link } from 'react-router-dom'; // ✅ use Link for internal routing
 
 const Footer = () => {
   const footerLinks = {
     support: [
-      { name: 'Help', href: '#' },
-      { name: 'Contact Us', href: '#' },
-      { name: 'FAQs', href: '#' },
-      { name: 'Privacy Policy', href: '#' },
-      { name: 'Terms & Conditions', href: '#' },
+      { name: 'Help', href: '/help' },
+      { name: 'Contact Us', href: '/contact' },
+      { name: 'FAQs', href: '/faqs' },
+      { name: 'Privacy Policy', href: '/privacy' },
+      { name: 'Terms & Conditions', href: '/terms' },
     ],
     resources: [
-      { name: 'Guides', href: '#' },
-      { name: 'Cooking Tips', href: '#' },
-      { name: 'Meal Plans', href: '#' },
-      { name: 'Ingredient Substitutes', href: '#' },
+      { name: 'Guides', href: '/guides' },
+      { name: 'Cooking Tips', href: '/cooking-tips' },
+      { name: 'Meal Plans', href: '/meal-plans' },
+      { name: 'Ingredient Substitutes', href: '/ingredient-subs' },
     ],
     community: [
-      { name: 'Forums', href: '#' },
-      { name: 'Cooking Challenges', href: '#' },
-      { name: 'Events', href: '#' },
-      { name: 'Ambassadors', href: '#' },
+      { name: 'Forums', href: '/forums' },
+      { name: 'Cooking Challenges', href: '/challenges' },
+      { name: 'Events', href: '/events' },
+      { name: 'Ambassadors', href: '/ambassadors' },
     ],
     company: [
-      { name: 'Careers', href: '#' },
-      { name: 'Blog', href: '#' },
-      { name: 'Press', href: '#' },
-      { name: 'Partners', href: '#' },
+      { name: 'Careers', href: '/careers' },
+      { name: 'Blog', href: '/blog' },
+      { name: 'Press', href: '/press' },
+      { name: 'Partners', href: '/partners' },
     ],
   };
 
@@ -35,18 +36,33 @@ const Footer = () => {
     <footer className="bg-blue-500 px-6 py-10 text-white">
       <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between gap-10">
 
-
+        {/* Left side: Socials */}
         <div className="md:w-1/3">
           <p className="text-lg font-semibold mb-4">Thank you for Visiting</p>
           <div className="flex gap-4">
-            <a href="#" className="w-10 h-10 bg-white rounded-full flex items-center justify-center  hover:text-xl hover:bg-gray-300 transition duration-75">
+            <a
+              href="https://linkedin.com"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="w-10 h-10 bg-white rounded-full flex items-center justify-center hover:text-xl hover:bg-gray-300 transition duration-75"
+            >
               <FontAwesomeIcon icon={faLinkedin} className="text-blue-950" />
             </a>
-            <a href="#" className="w-10 h-10 bg-white bg-opacity-20 rounded-full flex items-center justify-center hover:bg-gray-300 transition hover:text-xl duration-75">
+            <a
+              href="https://facebook.com"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="w-10 h-10 bg-white bg-opacity-20 rounded-full flex items-center justify-center hover:bg-gray-300 transition hover:text-xl duration-75"
+            >
               <FontAwesomeIcon icon={faFacebook} className="text-blue-950" />
             </a>
-            <a href="#" className="w-10 h-10 bg-gray-200 bg-opacity-20 rounded-full flex items-center justify-center hover:text-xl hover:text-blue-600 hover:bg-gray-300  transition duration-200 ">
-              <FontAwesomeIcon icon={faInstagram} className="text-blue-950 " />
+            <a
+              href="https://instagram.com"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="w-10 h-10 bg-gray-200 bg-opacity-20 rounded-full flex items-center justify-center hover:text-xl hover:text-blue-600 hover:bg-gray-300 transition duration-200"
+            >
+              <FontAwesomeIcon icon={faInstagram} className="text-blue-950" />
             </a>
           </div>
         </div>
@@ -59,9 +75,12 @@ const Footer = () => {
               <ul className="space-y-2 text-sm">
                 {links.map((link, index) => (
                   <li key={index}>
-                    <a href={link.href} className="text-white hover:underline hover:text-gray-200">
+                    <Link
+                      to={link.href}
+                      className="text-white hover:underline hover:text-gray-200"
+                    >
                       {link.name}
-                    </a>
+                    </Link>
                   </li>
                 ))}
               </ul>
