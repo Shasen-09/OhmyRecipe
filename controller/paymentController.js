@@ -21,6 +21,7 @@ export const initiateKhaltiPayment = async (req, res) => {
       website_url: BASE_URL,
       amount: Math.round(parseFloat(amount) * 100),
       purchase_order_name: productName,
+      purchase_order_id: transactionId,
       customer_info: {
         name: "Test User",
         email: "test@example.com",
