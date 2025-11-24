@@ -22,6 +22,7 @@ app.use('/user', require('./routes/userRoutes'))
 app.use('/api/recipes', require('./routes/recipeRoute'))
 app.use('/api', require('./routes/groqRoutes'))
 app.use('/api/bookmark', require('./routes/bookmarkRoutes'))
+app.use("/payment", require('./routes/paymentRoutes'));
 
 
 app.listen(PORT, () => {

@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 
 const bookmarkSchema = new mongoose.Schema(
   {
-    id: { type: Number, required: true }, // recipe ID
+    id: { type: Number, required: true },
     title: String,
     image: String,
   },
@@ -33,11 +33,11 @@ const userSchema = new mongoose.Schema({
 
   },
   otpExpires: {
-    type: Date,        // OTP expiration time
+    type: Date,
 
   },
   isVerified: {
-    type: Boolean,     // Tracks if user completed OTP verification
+    type: Boolean,
     default: false
   },
   bookmarks: [bookmarkSchema],

@@ -31,6 +31,11 @@ import Careers from './pages/landing-pages/footer-pages/Careers';
 import Blog from './pages/landing-pages/footer-pages/Blog';
 import Press from './pages/landing-pages/footer-pages/Press';
 import Partners from './pages/landing-pages/footer-pages/Partners';
+import Premium from './pages/Premium/Premium';
+import Success from './pages/Premium/Success';
+import Failure from './pages/Premium/Failure';
+
+
 
 
 function App() {
@@ -70,6 +75,11 @@ function App() {
           <Route path="/blog" element={<Blog />} />
           <Route path="/press" element={<Press />} />
           <Route path="/partners" element={<Partners />} />
+
+          <Route path="/premium" element={<Premium />} />
+          <Route path="/success" element={<Success />} />
+          <Route path="/failure" element={<Failure />} />
+
 
 
 
