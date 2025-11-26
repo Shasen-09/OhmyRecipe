@@ -64,116 +64,60 @@ Respond with ONLY the JSON object. No extra text, no explanations, no markdown f
 };
 
 
-const KNOWN_ALLERGIES = [
-  "dairy",
-  "egg",
-  "gluten",
-  "grain",
-  "peanut",
-  "seafood",
-  "sesame",
-  "shellfish",
-  "soy",
-  "sulfite",
-  "tree nut",
-  "wheat"
-];
 
-const KNOWN_DIETS = [
-  "gluten free",
-  "ketogenic",
-  "vegetarian",
-  "lacto vegetarian",
-  "ovo vegetarian",
-  "vegan",
-  "pescetarian",
-  "paleo",
-  "primal",
-  "low fodmap",
-  "whole30"
-];
 
 const userPreferences = async (req, res) => {
   try {
-    const { message } = req.body;
+    const { message, selectedAllergies = [], selectedDiets = [] } = req.body;
+
     if (!message) {
-      return res.status(400).send({
-        success: false,
-        message: "Message is required"
-      })
+      return res.status(400).send({ success: false, message: "Message is required" });
     }
+
+
     const completion = await groq.chat.completions.create({
       model: "openai/gpt-oss-20b",
       messages: [
         {
           role: "system",
-          content: `Extract allergies, diet preferences, and ingredients the user dislikes from their message.
-- Infer diet preferences based on phrases like "no animal products" → "vegan", "avoid carbs" → "ketogenic", or "no dairy or meat" → "paleo".
-- Normalize all values to lowercase and match against the following:
-  - Diets: "gluten free", "ketogenic", "vegetarian", "lacto-vegetarian", "ovo-vegetarian", "vegan", "pescetarian", "paleo", "primal", "low fodmap", "whole30"
-  - Allergies/Intolerances: "dairy", "egg", "gluten", "grain", "peanut", "seafood", "sesame", "shellfish", "soy", "sulfite", "tree nut", "wheat"
-- Correct common misspellings (e.g., "vegaan" → "vegan", "glutan" → "gluten").
-- Return a JSON object with keys: "allergies", "dietPreferences", and "dislikes".
-- Each key's value must be an array of lowercase strings.
-- If nothing is mentioned, return an empty array for that key.
-- Respond ONLY with the JSON object. No extra text or markdown formatting.
+          content: `
+Extract ingredients that the user dislikes from their message.
+- Normalize all ingredient names to lowercase and singular form.
+- Return a JSON object with key "dislikes" and its value as an array of strings.
+- Respond ONLY with the JSON object.
 `
-
         },
-        {
-          role: "user",
-          content: message
-        }
+        { role: "user", content: message }
       ],
-
     });
 
     let rawReply = completion.choices[0]?.message?.content.trim();
-
     if (rawReply.startsWith("```") && rawReply.endsWith("```")) {
       rawReply = rawReply.slice(3, -3).trim();
     }
-    let parsed;
-    try {
-      parsed = JSON.parse(rawReply);
 
-      if (
-        typeof parsed !== "object" ||
-        !Array.isArray(parsed.allergies) ||
-        !Array.isArray(parsed.dietPreferences) ||
-        !Array.isArray(parsed.dislikes)
-      ) {
-        throw new Error("Response does not match expected structure.");
+    let dislikes = [];
+    try {
+      const parsed = JSON.parse(rawReply);
+      if (Array.isArray(parsed.dislikes)) {
+        dislikes = parsed.dislikes.map(d => d.toLowerCase());
       }
     } catch (err) {
-      console.error("Failed to parse JSON:", rawReply);
-      return res.status(500).json({ error: "Invalid model response JSON." });
+      console.error("Failed to parse Groq dislikes:", rawReply);
     }
 
-
-    const cleanAllergies = parsed.allergies.map(a => a.toLowerCase());
-    const cleanDiets = parsed.dietPreferences.map(d => d.toLowerCase());
-    const cleanDislikes = parsed.dislikes.map(d => d.toLowerCase());
-
-
-    const validatedAllergies = cleanAllergies.map(name => ({
-      name,
-      known: KNOWN_ALLERGIES.includes(name)
-    }));
-
-    const validatedDiets = cleanDiets.filter(d => KNOWN_DIETS.includes(d));
-
     res.status(200).json({
-      allergies: validatedAllergies,
-      dietPreferences: validatedDiets,
-      dislikes: cleanDislikes
+      allergies: selectedAllergies.map(name => ({ name, known: KNOWN_ALLERGIES.includes(name) })),
+      dietPreferences: selectedDiets.filter(d => KNOWN_DIETS.includes(d)),
+      dislikes
     });
 
   } catch (error) {
-    console.log('Failed to get user input', error);
-    res.status(500).json({ error: "Groq API failed" });
+    console.error('Error in userPreferences', error);
+    res.status(500).json({ error: "Failed to process preferences" });
   }
 };
+
 
 const getIngredientsByPreferences = async (req, res) => {
   try {
