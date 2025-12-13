@@ -40,6 +40,11 @@ const userSchema = new mongoose.Schema({
     type: Boolean,
     default: false
   },
+  preferences: {
+    diets: [String],
+    allergies: [String],
+    dislikedIngredients: [String],
+  },
   bookmarks: [bookmarkSchema],
   resetPasswordToken: String,
   resetPasswordExpires: Date,

@@ -120,5 +120,25 @@ const recipeDetailsbyId = async (id) => {
   return response
 }
 
-const recipeServices = { popularWeekServices, userInputServices, recipesByIngredients, userPreferences, getFinalRecipe, getDetailsById, getNutrientsDetails, getTaste, getCuisine, getSimilarRecipes, getEquipment, recipeDetailsbyId }
+const getRecipesbyName = async (query) => {
+  const response = await axios.get('/api/recipes/recipeSearch', {
+    params: { query },
+    headers: {
+      'Content-Type': 'application/json'
+    }
+  })
+  return response
+}
+
+const getIngredientInfo = async (query) => {
+  const response = await axios.get('/api/recipes/ingredientInfo', {
+    params: { query },
+    headers: {
+      "Content-Type": 'application/json'
+    }
+  })
+  return response
+}
+
+const recipeServices = { popularWeekServices, userInputServices, recipesByIngredients, userPreferences, getFinalRecipe, getDetailsById, getNutrientsDetails, getTaste, getCuisine, getSimilarRecipes, getEquipment, recipeDetailsbyId, getRecipesbyName, getIngredientInfo }
 export default recipeServices;

@@ -126,6 +126,77 @@ const complexSearch = async (req, res) => {
   }
 }
 
+const recipebynameSearch = async (req, res) => {
+  try {
+    const { query } = req.query;
+
+    const response = await axios.get('https://api.spoonacular.com/recipes/complexSearch', {
+      params: {
+        query,
+        number: 5,
+        addRecipeInformation: true,
+        apiKey: API,
+      }
+    });
+    res.json(response.data);
+  } catch (error) {
+    res.status(500).send({
+      success: false,
+      message: "Complex Search is not available at the moment"
+    })
+  }
+}
+
+const ingredientInfo = async (req, res) => {
+  try {
+    const { query } = req.query;
+
+    const response = await axios.get('https://api.spoonacular.com/food/ingredients/search', {
+      params: {
+        query,
+        apiKey: API
+      }
+    })
+    if (!response.data.results.length) {
+      return res.status(404).json({ success: false, message: 'Ingredient not found' })
+    }
+
+    const id = response.data.results[0].id;
+
+    const infoResponse = await axios.get(`https://api.spoonacular.com/food/ingredients/${id}/information`, {
+      params: {
+        apiKey: API
+      }
+    })
+    res.json(infoResponse.data)
+  } catch (error) {
+    res.status(500).send({
+      success: false,
+      message: "There is no Id for this ingredient"
+    })
+  }
+}
+
+const ingredientSubstitue = async (req, res) => {
+  try {
+    const { ingredientName } = req.query;
+
+    const response = await axios.get('https://api.spoonacular.com/food/ingredients/substitutes', {
+      params: {
+        ingredientName,
+        apiKey: API
+      }
+    });
+    res.json(response.data)
+  } catch (error) {
+    res.status(500).send({
+      success: false,
+      message: "Ingredient Substitute is not available"
+    })
+  }
+}
+
+
 const ingredientsById = async (req, res) => {
   try {
     const { id } = req.query;
@@ -236,4 +307,4 @@ const getEquipment = async (req, res) => {
   }
 }
 
-module.exports = { getPopularRecipes, searchByIngredients, searchByRecipeSingleId, searchByRecipeMultipleId, complexSearch, ingredientsById, nutrientsById, classifyTaste, classifyCuisine, similarRecipes, getEquipment };
+module.exports = { getPopularRecipes, searchByIngredients, searchByRecipeSingleId, searchByRecipeMultipleId, complexSearch, ingredientsById, nutrientsById, classifyTaste, classifyCuisine, similarRecipes, getEquipment, recipebynameSearch, ingredientSubstitue, ingredientInfo };

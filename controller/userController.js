@@ -251,5 +251,94 @@ const homeController = (req, res) => {
 
 
 
+const getMe = async (req, res) => {
+  try {
 
-module.exports = { loginController, registerController, verifyOtpController, homeController, sendOtpController, transporter };
+    const user = await userModel.findById(req.user._id).select("username email contact preferences");
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    res.json(user);
+  } catch (error) {
+    console.error("GETME ERROR:", error);
+    res.status(500).json({ message: "Server error" });
+  }
+};
+
+
+const updateProfile = async (req, res) => {
+  try {
+    const { username, email, contact } = req.body;
+
+
+    const existingUser = await userModel.findOne({ email, _id: { $ne: req.user._id } });
+    if (existingUser) {
+      return res.status(400).json({ message: "Email already in use" });
+    }
+
+    const updatedUser = await userModel.findByIdAndUpdate(
+      req.user._id,
+      { username, email, contact },
+      { new: true, runValidators: true }
+    ).select("username email contact");
+
+    res.json(updatedUser);
+  } catch (error) {
+    console.error("UPDATE PROFILE ERROR:", error);
+    res.status(500).json({ message: "Server error" });
+  }
+};
+
+const deleteAccount = async (req, res) => {
+  try {
+    if (!req.user) {
+      return res.status(401).json({ message: "Unauthorized" });
+    }
+
+
+    await userModel.findByIdAndDelete(req.user._id);
+
+    return res.status(200).json({
+      message: "Account deleted successfully",
+    });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ message: "Server error" });
+  }
+};
+
+const updatePreferences = async (req, res) => {
+  try {
+    const { diets, allergies, dislikedIngredients } = req.body;
+
+    console.log("REQ.USER:", req.user);
+    console.log("BODY:", req.body);
+
+    const user = await userModel.findByIdAndUpdate(
+      req.user._id,
+      {
+        $set: {
+          preferences: {
+            diets,
+            allergies,
+            dislikedIngredients,
+          },
+        },
+      },
+      { new: true }
+    ).select("preferences");
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    res.status(200).json(user.preferences);
+  } catch (error) {
+    console.error("UPDATE PREFERENCES ERROR:", error);
+    res.status(500).json({ message: "Server error" });
+  }
+};
+
+module.exports = { loginController, registerController, verifyOtpController, homeController, sendOtpController, getMe, updateProfile, deleteAccount, updatePreferences, transporter };

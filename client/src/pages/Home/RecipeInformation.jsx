@@ -1,12 +1,14 @@
 import { useLocation, useParams, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
-import NavBAr from "../NavBAr.jsx";
+
 import { useRecipes } from "../../context/RecipeContext.jsx";
 import { BiSolidDish } from "react-icons/bi";
 import { GiForkKnifeSpoon } from "react-icons/gi";
 import { IoPricetag } from "react-icons/io5";
 import recipeServices from "../../services/recipeServices.jsx";
 import { FaHeart, FaRegHeart } from "react-icons/fa6";
+import Sidebar from "../Sidebar.jsx";
+import { useSidebar } from "../../context/SidebarContext.jsx";
 
 
 const RecipeInformation = () => {
@@ -14,6 +16,7 @@ const RecipeInformation = () => {
   const navigate = useNavigate();
   const { id } = useParams();
   const { toggleBookmark, isBookmarked, bookmarks } = useRecipes();
+  const { isOpen } = useSidebar();
 
   const [recipeDetails, setRecipeDetails] = useState(null)
   const [nutrients, setNutrients] = useState('');
@@ -111,9 +114,10 @@ const RecipeInformation = () => {
 
   return (
     <>
-      <NavBAr />
-      <>
-        <div className="absolute mt-10 right-0 z-50">
+      <Sidebar />
+      <div className={`transition-all duration-300 ${isOpen ? 'ml-64' : 'ml-16'}`}>
+
+        <div className="absolute mt-10 right-0 z-50 ">
           <button
             onClick={() => toggleBookmark(recipeDetails)}
             className="px-4 py-2 rounded-lg flex items-center justify-center cursor-pointer"
@@ -315,7 +319,8 @@ const RecipeInformation = () => {
 
 
 
-      </>
+
+      </div>
     </>
   );
 };

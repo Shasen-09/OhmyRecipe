@@ -41,19 +41,19 @@ const UserInput = () => {
       const dislikes = preferences.dislikes ? preferences.dislikes.split(',').map(d => d.trim()) : [];
 
       const restrictedKeywords = [
-        ...allergies.map(a => pluralize.singular(a.name).toUpperCase()),
-        ...dislikes.map(d => pluralize.singular(d).toUpperCase())
+        ...allergies.map(a => pluralize.singular(a.name)),
+        ...dislikes.map(d => pluralize.singular(d))
       ];
 
       const filteredIngredients = Object.entries(ingredients).reduce((acc, [key, value]) => {
-        const singularKey = pluralize.singular(key).toUpperCase();
+        const singularKey = pluralize.singular(key);
         const hasConflict = restrictedKeywords.some(r => singularKey.includes(r));
         if (!hasConflict) acc[singularKey] = value;
         return acc;
       }, {});
 
       const removed = Object.keys(ingredients).filter(key =>
-        restrictedKeywords.some(r => pluralize.singular(key).toUpperCase().includes(r))
+        restrictedKeywords.some(r => pluralize.singular(key).includes(r))
       );
       if (removed.length > 0) {
         alert(`Removed due to preferences: ${removed.join(", ")}`);
@@ -159,76 +159,81 @@ const UserInput = () => {
     <>
       <div className={`${popupmodal ? 'blur-sm select-none pointer-events-none' : ''}`}>
         {/* --- Ingredient Input --- */}
-        <div className='flex flex-col mt-10 gap-4 items-center'>
-          <div className='relative w-1/2'>
-            <span className='text-3xl absolute transform -translate-y-1/2 top-1/2 left-2'>🍳</span>
+        <div className="flex flex-col mt-10 gap-6 w-[90%]  mx-auto">
+          {/* Input */}
+          <div className="relative w-full">
+            <span className="text-3xl absolute transform -translate-y-1/2 top-1/2 left-3">🍳</span>
             <input
-              type='text'
-              placeholder='Put your ingredients'
-              className='pl-12 pr-24 border border-gray-300 rounded-md py-2 w-full focus:outline-none focus:ring-2 focus:ring-blue-600 shadow-md text-lg'
+              type="text"
+              placeholder="Put your ingredients"
+              className="pl-12 pr-24 border border-gray-300 rounded-md py-2 w-full focus:outline-none focus:ring-2 focus:ring-blue-600 shadow-md text-lg"
               value={input}
               onChange={(e) => setInput(e.target.value)}
             />
             <button
-              className='absolute right-2 top-1/2 transform -translate-y-1/2 bg-blue-600 text-white font-bold px-3 py-1 rounded hover:bg-blue-700 cursor-pointer'
+              className="absolute right-2 top-1/2 transform -translate-y-1/2 bg-blue-600 text-white font-bold px-4 py-1 rounded hover:bg-blue-700 cursor-pointer"
               onClick={handleSubmit}
             >
               {loading ? '...' : 'Extract'}
             </button>
           </div>
 
-          {/* --- Extracted Ingredients --- */}
-          <div className='bg-gray-200 w-1/2 pl-10 pr-10 py-2 rounded-md shadow-sm uppercase'>
-            {ingredients && (
-              <div>
-                <h2 className='font-semibold mb-2'>Extracted ingredients:</h2>
-                <ul className='space-y-2'>
-                  {Object.entries(ingredients).map(([key, value]) => (
-                    <li key={key} className='flex justify-between items-center border-b border-gray-200 pb-1'>
-                      {key}: {value}
-                      <button className='ml-4 text-red-600 font-semibold hover:underline cursor-pointer' onClick={() => deleteIngredient(key)}>
-                        <ImCross />
-                      </button>
-                    </li>
-                  ))}
-                </ul>
+          {/* Extracted Ingredients & Preferences Card */}
+          {ingredients && (
+            <div className="bg-gray-200 p-4 rounded-md shadow-sm w-full">
+              <h2 className="font-semibold mb-2">EXTRACTED INGREDIENTS:</h2>
+              <ul className="space-y-2 mb-4">
+                {Object.entries(ingredients).map(([key]) => (
+                  <li key={key} className="flex justify-between items-center border-b border-gray-300 pb-1 capitalize ">
+                    {key}
+                    <button
+                      className="ml-4 text-red-600 font-semibold hover:underline cursor-pointer"
+                      onClick={() => deleteIngredient(key)}
+                    >
+                      <ImCross />
+                    </button>
+                  </li>
+                ))}
+              </ul>
 
-                {/* --- Preferences Display --- */}
-                {preferencesData && (
-                  <div>
-                    <div className='flex justify-between'>
-                      <h2 className='font-semibold mb-2'>Preferences:</h2>
-                      <span className='capitalize text-blue-600 font-semibold text-sm cursor-pointer hover:text-blue-700 hover:underline' onClick={editPreferences}>
-                        Edit
-                      </span>
-                    </div>
-                    <p>Allergies: <span>{preferencesData.allergies.map(a => a.name).join(", ") || "None"}</span></p>
-                    <p>Diet: <span>{preferencesData.dietPreferences.join(",") || "None"}</span></p>
-                    <p>Disliked Ingredients: <span>{preferencesData.dislikes.join(",") || "None"}</span></p>
+              {preferencesData && (
+                <div>
+                  <div className="flex justify-between items-center mb-2">
+                    <h2 className="font-semibold">PREFERENCES:</h2>
+                    <span
+                      className="text-blue-600 font-semibold text-sm cursor-pointer hover:text-blue-700 hover:underline"
+                      onClick={editPreferences}
+                    >
+                      Edit
+                    </span>
                   </div>
-                )}
-              </div>
-            )}
-          </div>
+                  <p>Allergies: <span className='capitalize'>{preferencesData.allergies.map(a => a.name).join(", ") || "None"}</span></p>
+                  <p>Diet: <span className='capitalize'>{preferencesData.dietPreferences.join(", ") || "None"}</span></p>
+                  <p>Disliked Ingredients: <span className='capitalize'>{preferencesData.dislikes.join(", ") || "None"}</span></p>
+                </div>
+              )}
+            </div>
+          )}
 
-          {/* --- Action Buttons --- */}
-          <div className='w-1/2 flex gap-4 justify-center mt-4'>
+          {/* Action Buttons */}
+          <div className="flex flex-col sm:flex-row gap-4 mt-4 w-full">
             <button
               disabled={preferencesData}
-              className={`bg-blue-600 text-white px-3 py-1 rounded-md hover:bg-blue-700 font-bold ${preferencesData ? 'cursor-not-allowed' : 'cursor-pointer'}`}
+              className={`flex-1 bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 font-bold ${preferencesData ? 'cursor-not-allowed' : 'cursor-pointer'}`}
               onClick={fetchRecipes}
             >
               {loading ? '...' : 'Get Recipes'}
             </button>
             <button
               disabled={!preferencesData}
-              className={`bg-blue-600 text-white px-3 py-1 rounded-md hover:bg-blue-700 font-bold ${preferencesData ? 'cursor-pointer' : 'cursor-not-allowed'}`}
+              className={`flex-1 bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 font-bold ${preferencesData ? 'cursor-pointer' : 'cursor-not-allowed'}`}
               onClick={finalRecipe}
             >
-              {loading ? '...' : 'Get Recipes with preferences'}
+              {loading ? '...' : 'Get Recipes with Preferences'}
             </button>
           </div>
         </div>
+
         {/* --- Render Recipe Cards --- */}
         {recipes.length > 0 && (
           <div className="grid grid-cols-1 md:grid-cols-3 w-[97%] gap-10 p-4 mx-auto mt-8">
@@ -236,11 +241,11 @@ const UserInput = () => {
               const detail = recipeDetails.find(d => d.id === recipe.id) || {};
               return (
                 <div key={recipe.id} className="flex flex-col gap-6 p-4 rounded shadow-lg items-center bg-gray-200">
-                  <h2 className="text-center font-bold text-xl mb-1 line-clamp-1">{recipe.title}</h2>
+                  <h2 className="text-center font-bold text-xl  line-clamp-1">{recipe.title}</h2>
                   <img
                     src={recipe.image || detail.image}
                     alt={recipe.title || detail.title}
-                    className="w-[90%] mb-1 max-h-40 object-cover rounded mx-auto"
+                    className="w-[90%]  max-h-40 object-cover rounded mx-auto"
                   />
                   {!detail.id ? (
                     <div className="flex flex-col text-lg gap-1 justify-center items-center">

@@ -41,7 +41,7 @@ const Footer = () => {
           <p className="text-lg font-semibold mb-4">Thank you for Visiting</p>
           <div className="flex gap-4">
             <a
-              href="https://linkedin.com"
+              href="https://www.linkedin.com/in/shasen-shrestha-40505a28a/"
               target="_blank"
               rel="noopener noreferrer"
               className="w-10 h-10 bg-white rounded-full flex items-center justify-center hover:text-xl hover:bg-gray-300 transition duration-75"
@@ -49,7 +49,7 @@ const Footer = () => {
               <FontAwesomeIcon icon={faLinkedin} className="text-blue-950" />
             </a>
             <a
-              href="https://facebook.com"
+              href="https://www.facebook.com/shasen09"
               target="_blank"
               rel="noopener noreferrer"
               className="w-10 h-10 bg-white bg-opacity-20 rounded-full flex items-center justify-center hover:bg-gray-300 transition hover:text-xl duration-75"
@@ -57,7 +57,7 @@ const Footer = () => {
               <FontAwesomeIcon icon={faFacebook} className="text-blue-950" />
             </a>
             <a
-              href="https://instagram.com"
+              href="https://www.instagram.com/shasen_zero9/"
               target="_blank"
               rel="noopener noreferrer"
               className="w-10 h-10 bg-gray-200 bg-opacity-20 rounded-full flex items-center justify-center hover:text-xl hover:text-blue-600 hover:bg-gray-300 transition duration-200"

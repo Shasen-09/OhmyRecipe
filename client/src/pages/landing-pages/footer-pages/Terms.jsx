@@ -1,21 +1,28 @@
-// File: EthicalForms.jsx (React JavaScript - no TypeScript)
 import React, { useState } from "react";
-import NavBAr from "../../NavBAr";
 import Footer from "../Footer";
+import { IoArrowBackOutline } from "react-icons/io5";
+import { useNavigate } from "react-router-dom";
 
 const Terms = () => {
+  const navigate = useNavigate();
   const [consent, setConsent] = useState(false);
   const [submitted, setSubmitted] = useState(false);
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    // Here you would typically call an API or persist consent in the backend
+
     setSubmitted(true);
   };
 
   return (
     <div className="flex flex-col min-h-screen">
-      <NavBAr />
+      {/* Back Button */}
+      <div className="text-3xl ml-5 mt-5">
+        <button onClick={() => navigate("/")} className="cursor-pointer">
+          <IoArrowBackOutline />
+        </button>
+      </div>
+
       <div className="max-w-3xl mx-auto py-12 px-6 flex-1">
         <h1 className="text-3xl font-bold text-blue-600 mb-6 text-center">
           Ethical Forms & User Consent
@@ -76,6 +83,7 @@ const Terms = () => {
           )}
         </section>
       </div>
+
       <Footer />
     </div>
   );

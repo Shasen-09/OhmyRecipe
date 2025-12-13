@@ -1,15 +1,17 @@
 import React, { useEffect, useState, useCallback } from "react";
-import NavBAr from "../NavBAr.jsx";
+import Sidebar from "../Sidebar";
 import { useNavigate } from "react-router-dom";
 import bookmarkServices from "../../services/bookmarkServices";
 import { FaHeart } from "react-icons/fa6";
 import { FaHome } from "react-icons/fa";
 import { IoMdArrowRoundBack } from "react-icons/io";
+import { useSidebar } from "../../context/SidebarContext";
 
 const Bookmark = () => {
   const navigate = useNavigate();
   const [bookmarks, setBookmarks] = useState([]);
   const [loading, setLoading] = useState(true);
+  const { isOpen } = useSidebar();
 
   const fetchBookmarks = useCallback(async () => {
     const token = localStorage.getItem("token");
@@ -59,8 +61,8 @@ const Bookmark = () => {
 
   return (
     <>
-      <NavBAr />
-      <div className="p-5">
+      <Sidebar />
+      <div className={`p-5 transition-all duration-300 relative ${isOpen ? 'ml-64' : 'ml-16'}`}>
 
         <div className="relative flex items-center justify-center mb-6">
 
@@ -74,6 +76,7 @@ const Bookmark = () => {
                   navigate("/home");
                 }
               }}
+              title="Back to recently saved recipe"
             />
           </div>
           <h1 className="text-2xl font-bold text-center w-full">

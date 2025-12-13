@@ -2,8 +2,7 @@ import { useEffect } from "react";
 import { Link } from "react-router-dom";
 
 export default function Failure() {
-
-  // Optional: Auto redirect back to Premium page in 5 seconds
+  // Auto redirect back to Premium page in 5 seconds
   useEffect(() => {
     const timer = setTimeout(() => {
       window.location.href = "/premium";
@@ -12,43 +11,19 @@ export default function Failure() {
   }, []);
 
   return (
-    <div style={{
-      minHeight: "100vh",
-      display: "flex",
-      justifyContent: "center",
-      alignItems: "center",
-      backgroundColor: "#f8d7da",
-      padding: "20px"
-    }}>
-      <div style={{
-        maxWidth: "500px",
-        width: "100%",
-        backgroundColor: "white",
-        padding: "30px",
-        borderRadius: "12px",
-        boxShadow: "0 4px 12px rgba(0,0,0,0.1)",
-        textAlign: "center"
-      }}>
-        <h1 style={{ color: "#dc3545", marginBottom: "10px" }}>
-          ❌ Payment Failed
+    <div className="min-h-screen flex items-center justify-center bg-red-50 px-4">
+      <div className="max-w-md w-full bg-white rounded-2xl shadow-2xl p-8 text-center">
+        <h1 className="text-2xl sm:text-3xl font-bold text-red-600 mb-4">
+          Payment Failed
         </h1>
 
-        <p style={{ marginBottom: "20px", fontSize: "16px", color: "#555" }}>
+        <p className="text-gray-700 mb-6">
           Unfortunately, we couldn't process your payment.<br />
           Please try again. You will be redirected shortly.
         </p>
 
         <Link to="/premium">
-          <button style={{
-            padding: "10px 20px",
-            backgroundColor: "#dc3545",
-            border: "none",
-            color: "white",
-            borderRadius: "6px",
-            cursor: "pointer",
-            fontSize: "16px",
-            marginTop: "10px"
-          }}>
+          <button className="px-6 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 font-semibold">
             Try Again
           </button>
         </Link>

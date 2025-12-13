@@ -18,7 +18,7 @@ const Landing = () => {
   return (
     <>
 
-      <NavUI />
+
       <Bar />
       <div className='w-[600px] h-[600px] bg-gradient-to-tr from-blue-600/20 to-pink-500/20 rounded-full -left-28 -top-0.05 absolute blur-[50px] pointer-events-none'></div>
 

@@ -21,7 +21,6 @@ const ForgotPassword = () => {
         { email }
       );
       alert(response.data.message);
-
       navigate("/check-email");
     } catch (error) {
       console.error(error);
@@ -32,35 +31,46 @@ const ForgotPassword = () => {
   };
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-gray-100">
-      <form
-        onSubmit={handleSubmit}
-        className="bg-white p-8 rounded-md shadow-md w-80 space-y-4"
-      >
-        <h2 className="text-2xl font-bold text-center text-blue-600">
+    <div className="flex min-h-screen items-center justify-center bg-gray-100 px-4">
+      <div className="bg-white rounded-xl shadow-lg w-full max-w-md p-8">
+        <h2 className="text-3xl font-bold text-center text-blue-600 mb-2">
           Forgot Password
         </h2>
-        <p className="text-sm text-gray-600 text-center">
+        <p className="text-gray-600 text-center mb-6">
           Enter your email to receive a password reset link
         </p>
 
-        <input
-          type="email"
-          placeholder="Email Address"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          className="w-full px-3 py-2 border rounded-md"
-          required
-        />
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <div>
+            <input
+              type="email"
+              placeholder="Email Address"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-400 focus:outline-none transition"
+              required
+            />
+          </div>
 
-        <button
-          type="submit"
-          disabled={loading}
-          className="w-full bg-blue-600 text-white py-2 rounded-md hover:bg-blue-700 transition"
-        >
-          {loading ? "Sending..." : "Send Reset Link"}
-        </button>
-      </form>
+          <button
+            type="submit"
+            disabled={loading}
+            className="w-full py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition font-semibold"
+          >
+            {loading ? "Sending..." : "Send Reset Link"}
+          </button>
+        </form>
+
+        <div className="mt-6 text-center text-sm text-gray-500">
+          Remembered your password?{" "}
+          <span
+            onClick={() => navigate("/login")}
+            className="text-blue-600 hover:underline cursor-pointer"
+          >
+            Log in
+          </span>
+        </div>
+      </div>
     </div>
   );
 };
