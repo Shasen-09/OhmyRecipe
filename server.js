@@ -4,6 +4,7 @@ const morgan = require("morgan");
 const cors = require("cors");
 const dotenv = require("dotenv");
 const connectDB = require("./config/db");
+const path = require("path");
 
 
 dotenv.config();
@@ -23,6 +24,13 @@ app.use('/api/recipes', require('./routes/recipeRoute'))
 app.use('/api', require('./routes/groqRoutes'))
 app.use('/api/bookmark', require('./routes/bookmarkRoutes'))
 app.use("/payment", require('./routes/paymentRoutes'));
+
+if (process.env.NODE_ENV === "production") {
+  app.use(express.static(path.join(__dirname, "client/dist")));
+  app.get("*", (req, res) => {
+    res.sendFile(path.join(__dirname, "client/dist/index.html"));
+  });
+}
 
 
 app.listen(PORT, () => {
