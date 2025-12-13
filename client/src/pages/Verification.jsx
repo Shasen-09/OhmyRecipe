@@ -18,14 +18,14 @@ const Verification = () => {
   const [resendLoading, setResendLoading] = useState(false);
   const inputs = useRef([]);
 
-  // Countdown timer
+
   useEffect(() => {
     if (timer <= 0) return;
     const interval = setInterval(() => setTimer(t => t - 1), 1000);
     return () => clearInterval(interval);
   }, [timer]);
 
-  // Navigate if verified
+
   useEffect(() => {
     if (isVerified) navigate('/home');
   }, [isVerified, navigate]);
@@ -59,6 +59,7 @@ const Verification = () => {
       return;
     }
     dispatch(verifyUser({ email, otp: otp.join('') }));
+
   };
 
   const handleResend = async () => {
@@ -69,16 +70,16 @@ const Verification = () => {
       return;
     }
 
-    if (resendLoading) return; // prevent multiple clicks
+    if (resendLoading) return;
     setResendLoading(true);
 
     try {
       const response = await axios.post('/user/send-otp', { email });
 
       if (response.data.success) {
-        setOtp(Array(6).fill('')); // clear inputs
-        setTimer(60); // reset timer
-        inputs.current[0]?.focus(); // focus first input
+        setOtp(Array(6).fill(''));
+        setTimer(60);
+        inputs.current[0]?.focus();
         alert('OTP resent to your email!');
       } else {
         alert(response.data.message || 'Failed to resend OTP');

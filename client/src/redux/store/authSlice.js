@@ -126,6 +126,7 @@ const authSlice = createSlice({
           state.token = token;
           localStorage.setItem('token', token);
         }
+        state.isVerified = state.user?.isVerified || false;
       })
       .addCase(verifyUser.rejected, (state, action) => {
         state.loading = false;
